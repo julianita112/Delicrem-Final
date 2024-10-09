@@ -285,7 +285,7 @@ export function Insumos() {
       showCancelButton: true,
       confirmButtonColor: '#A62A64',
       cancelButtonColor: '#000000',
-      confirmButtonText: `Sí, ${accion} el insumo`,
+      confirmButtonText: `Sí, ${accion}`,
       cancelButtonText: 'Cancelar'
     });
   
@@ -506,7 +506,7 @@ export function Insumos() {
       </Card>
 
       <Dialog open={open} handler={handleOpen} className="max-w-md w-11/12 p-6 bg-white rounded-lg shadow-lg" size="xs">
-        <DialogHeader className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-4">
+        <DialogHeader className="text-xl font-semibold text-black border-b border-gray-200 pb-4">
           {editMode ? "Editar Insumo" : "Crear Insumo"}
         </DialogHeader>
         <DialogBody divider className="space-y-4">

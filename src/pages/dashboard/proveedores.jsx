@@ -474,7 +474,7 @@ export function Proveedores() {
 
       {/* Modal para crear/editar proveedor */}
       <Dialog open={open} onClose={handleOpen} className="max-w-md w-11/12 p-6 bg-white rounded-xl shadow-lg" size="xs">
-        <DialogHeader className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-4">
+        <DialogHeader className="text-xl font-semibold  border-b border-gray-200 pb-4 text-black">
           {editMode ? "Editar Proveedor" : "Crear Proveedor"}
         </DialogHeader>
         <DialogBody>

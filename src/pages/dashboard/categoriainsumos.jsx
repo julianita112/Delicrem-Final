@@ -263,12 +263,10 @@ export function CategoriaInsumos() {
         }
         await axios.patch(`http://localhost:3000/api/categorias_insumo/${categoria.id_categoria}/estado`, { estado: !categoria.estado });
         fetchCategorias();
-        Swal.fire({
+        Toast.fire({
           icon: 'success',
           title: `La categoría ha sido ${!categoria.estado ? 'activada' : 'desactivada'} correctamente.`,
-          confirmButtonColor: '#A62A64',
-          background: '#fff',
-          confirmButtonText: 'Aceptar'
+       
         });
       } catch (error) {
         console.error("Error al cambiar el estado de la categoría:", error);

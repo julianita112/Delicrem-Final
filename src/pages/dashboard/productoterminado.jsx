@@ -366,7 +366,7 @@ export function ProductoTerminado() {
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vendidos</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                     <th scope="col" className="px-10 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Acciones
@@ -577,7 +577,8 @@ export function ProductoTerminado() {
           </table>
         </DialogBody>
         <DialogFooter>
-          <Button variant="gradient" color="blue-gray" onClick={handleDetailsOpen}>
+          <Button variant="gradient"
+           className="btncancelarm" size="sm" color="blue-gray" onClick={handleDetailsOpen}>
             Cerrar
           </Button>
         </DialogFooter>

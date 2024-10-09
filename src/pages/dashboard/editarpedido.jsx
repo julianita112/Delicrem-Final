@@ -183,21 +183,34 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
   useEffect(() => {
     validateRealTime();
   }, [selectedPedido]);
-  const handleSave = async () => {
-    // Validaciones previas
-    const newErrors = {};
-    const today = new Date(); // Obtener la fecha actual
+
   
+  const handleSave = async () => {
+    const newErrors = {};
+    const today = new Date().toISOString().split("T")[0]; // Obtener la fecha de hoy en formato YYYY-MM-DD
+  
+    // Validar fecha de entrega
     if (!selectedPedido.fecha_entrega) {
       newErrors.fecha_entrega = "La fecha de entrega es obligatoria";
-    } else if (new Date(selectedPedido.fecha_entrega) < today) {
+    } else if (new Date(selectedPedido.fecha_entrega) < new Date(today)) {
       newErrors.fecha_entrega = "La fecha de entrega no puede ser en el pasado";
     }
   
-    if (selectedPedido.fecha_pago && new Date(selectedPedido.fecha_pago) > today) {
-      newErrors.fecha_pago = "La fecha de pago no puede ser en el futuro";
+    // Validar fecha de pago
+    if (selectedPedido.fecha_pago) {
+      // Si la fecha de pago ya está llena, no permitir editar
+      if (new Date(selectedPedido.fecha_pago).toISOString().split("T")[0] !== today) {
+        newErrors.fecha_pago = "La fecha de pago debe ser la fecha de hoy";
+      } else {
+        // Cambiar el estado del pedido a "pagado"
+        selectedPedido.estado_pago = "pagado";
+      }
+    } else {
+      // Si no hay fecha de pago y el campo está vacío
+      newErrors.fecha_pago = "La fecha de pago es obligatoria y debe ser la fecha de hoy";
     }
   
+    // Validaciones adicionales para los detalles del pedido
     if (selectedPedido.detallesPedido.length === 0) {
       newErrors.detallesPedido = "Debe agregar al menos un detalle de pedido";
     }
@@ -213,7 +226,6 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
         newErrors[`precio_unitario_${index}`] = "El precio unitario debe ser un número positivo";
       }
     });
-  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       Swal.fire({
@@ -451,6 +463,7 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
                    
                     name="precio_unitario"
                     type="number"
+                    disabled
                     step="0.01"
                     value={detalle.precio_unitario}
                     c   className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-0"
@@ -499,7 +512,7 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
               className="flex items-center gap-2 bg-black text-white hover:bg-pink-800 px-4 py-2 rounded-md"
               >
                 <PlusIcon className="h-5 w-5" />
-      Agregar Insumo
+      Agregar Producto
     </Button>
             </div>
       <div className="flex justify-end mt-4">

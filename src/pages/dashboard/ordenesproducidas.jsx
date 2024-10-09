@@ -201,8 +201,8 @@ export function OrdenesProducidas({handleBackToMain}) {
       </CardBody>
 
       <Dialog open={detailsOpen} handler={handleDetailsOpen} className="max-w-xs w-11/12 bg-white rounded-lg shadow-lg" size="xs">
-        <DialogHeader className="text-xl font-bold text-gray-800">
-          Detalles de la Orden de Producción
+        <DialogHeader className="text-xl font-bold text-black">
+          Detalles de la Orden de Producida
         </DialogHeader>
         <DialogBody className="space-y-2">
           <div className="space-y-1">

@@ -133,17 +133,28 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
   const handleSave = async () => {
     const newErrors = {};
     const today = new Date().toISOString().split("T")[0]; 
+    const futureDate = (date) => new Date(date) > new Date(today);
   
+    // Validación de cliente
     if (!selectedVenta.id_cliente) {
       newErrors.id_cliente = "El cliente es obligatorio";
     }
   
+    // Validación de fecha de venta
     if (!selectedVenta.fecha_venta) {
       newErrors.fecha_venta = "La fecha de venta es obligatoria";
     } else if (selectedVenta.fecha_venta !== today) {
       newErrors.fecha_venta = "La fecha de venta debe ser hoy.";
     }
   
+    // Validación de fecha de entrega (obligatoria y debe ser a futuro)
+    if (!selectedVenta.fecha_entrega) {
+      newErrors.fecha_entrega = "La fecha de entrega es obligatoria";
+    } else if (!futureDate(selectedVenta.fecha_entrega)) {
+      newErrors.fecha_entrega = "La fecha de entrega debe ser en el futuro";
+    }
+  
+    // Validación de detalles de ventas
     if (selectedVenta.detalleVentas.length === 0) {
       newErrors.detalleVentas = "Debe agregar al menos un detalle de venta";
     }
@@ -205,7 +216,7 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
   
     try {
       await axios.post("http://localhost:3000/api/ventas", ventaToSave);
-      Swal.fire({
+      Toast.fire({
         title: "¡Creación exitosa!",
         text: "La venta ha sido creada correctamente.",
         icon: "success",
@@ -255,6 +266,7 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
                     </Option>
                   ))}
               </Select>
+              {errors.numero_venta && <p className="text-red-500 text-xs mt-1">{errors.numero_venta}</p>} {/* Mostrar error */}
             </div>
 <div className="flex flex-col gap-2 w-1/2">
             <Select
@@ -273,6 +285,7 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
                   </Option>
                 ))}
             </Select>
+            {errors.id_cliente && <p className="text-red-500 text-xs mt-1">{errors.id_cliente}</p>} {/* Mostrar error */}
           </div>
           </div>
           <div className="flex gap-4">
@@ -286,6 +299,7 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
               className="w-full text-xs"
               required
             />
+              {errors.fecha_venta && <p className="text-red-500 text-xs mt-1">{errors.fecha_venta}</p>} {/* Mostrar error */}
           </div>
           <div className="flex flex-col gap-2 w-1/2">
             <Input
@@ -297,6 +311,7 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
               className="w-full text-xs"
               required
             />
+               {errors.fecha_entrega && <p className="text-red-500 text-xs mt-1">{errors.fecha_entrega}</p>} {/* Mostrar error */}
           </div>
         </div>
         <div className="w-full p-4 bg-white rounded-lg shadow-lg">
@@ -329,6 +344,7 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
                 </Option>
               ))}
             </Select>
+            {errors[`producto_${index}`] && <p className="text-red-500 text-xs mt-1">{errors[`producto_${index}`]}</p>} {/* Mostrar error */}
           </div>
           <div className="flex flex-col md:flex-row gap-4 w-full">
   <div className="flex flex-col md:w-1/4 gap-2">
@@ -347,6 +363,7 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
       }}
       className="w-full text-xs border border-gray-300 rounded-lg p-2 focus:border-blue-500 focus:ring-0"
     />
+      {errors[`cantidad_${index}`] && <p className="text-red-500 text-xs mt-1">{errors[`cantidad_${index}`]}</p>} {/* Mostrar error */}
   </div>
 
             <div className="flex flex-col md:w-1/8 px-10 gap-2">
@@ -400,7 +417,7 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
   className="flex items-center gap-2 bg-black text-white hover:bg-pink-800 px-4 py-2 rounded-md normal-case"
 >
   <PlusIcon className="h-5 w-5" />
-  Agregar Insumo
+  Agregar Producto
 </Button>
 
   </div>

@@ -440,7 +440,7 @@ export function Roles() {
       </Card>
 
       <Dialog open={open} handler={handleOpen} className="custom-modal">
-        <DialogHeader>{editMode ? "Visualizar Rol" : "Crear Rol"}</DialogHeader>
+        <DialogHeader>{editMode ? "Editar Rol" : "Crear Rol"}</DialogHeader>
         <DialogBody divider className="overflow-auto max-h-[60vh]">
           <Input
             label="Nombre del rol"

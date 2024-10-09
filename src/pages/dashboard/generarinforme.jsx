@@ -203,9 +203,9 @@ export function GenerarInforme({ onCancel }) { // onCancel para manejar el botó
         label: 'Cantidad Comprada',
         data: insumosData,
         backgroundColor: [
-          '#AE017E', // Fucsia
-          '#7A0177', // Morado
-          '#49006A', // Negro
+          '#AE017D6E', // Fucsia
+          '#7A017842', // Morado
+          '#48006A7A', // Negro
           // Puedes agregar más colores similares si es necesario
         ],
       },
@@ -219,9 +219,9 @@ export function GenerarInforme({ onCancel }) { // onCancel para manejar el botó
         label: 'Total Comprado',
         data: proveedoresData,
         backgroundColor: [
-          '#AE017E', // Magenta Oscuro
-          '#7A0177', // Morado Intenso
-          '#49006A', // Púrpura Oscuro
+          '#AE017D91', // Magenta Oscuro
+          '#7A017892', // Morado Intenso
+          '#48006A7C', // Púrpura Oscuro
           // Puedes añadir más colores similares si es necesario
         ],
         borderColor: [
@@ -242,7 +242,7 @@ export function GenerarInforme({ onCancel }) { // onCancel para manejar el botó
     scales: {
       y: {
         beginAtZero: true,
-        max: 15000,
+        max: 110,
         ticks: {
           stepSize: 400,
         },
@@ -302,7 +302,7 @@ export function GenerarInforme({ onCancel }) { // onCancel para manejar el botó
       {informeGenerado && (
  <div className="flex justify-end mt-6">
  <Button className="px-4 py-2" onClick={handleDescargarExcel}>
-   Descargar Reporte
+   Descargar Informe
  </Button>
 </div>
 

@@ -87,13 +87,13 @@ export function Ventas() {
     try {
       const response = await axios.patch(`http://localhost:3000/api/ventas/${numero_venta}/entregar`);
       fetchVentas(); // Actualiza la lista de ventas después de entregar
-      Swal.fire({
+      Toast.fire({
         icon: 'success',
         title: 'La venta ha sido entregada correctamente.',
       });
     } catch (error) {
       console.error("Error al entregar la venta:", error.response?.data || error.message);
-      Swal.fire({
+      Toast.fire({
         icon: 'error',
         title: `Hubo un problema al entregar la venta: ${error.response?.data?.error || error.message}`,
       });
@@ -192,7 +192,7 @@ export function Ventas() {
   const handleToggleActivo = async (id_venta) => {
     const venta = ventas.find(v => v.id_venta === id_venta);
     if (!venta) {
-      Swal.fire({
+      Toast.fire({
         icon: 'error',
         title: 'Venta no encontrada.',
       });
@@ -201,7 +201,7 @@ export function Ventas() {
 
     // Solo permitir anular si id_estado no es 1 ni 5
     if (venta.id_estado === 1 || venta.id_estado === 5) {
-      Swal.fire({
+      Toast.fire({
         icon: 'error',
         title: 'Operación no permitida.',
         text: 'No se puede anular una venta en este estado.',
@@ -215,7 +215,7 @@ export function Ventas() {
 
   const handleCancelVenta = async () => {
     if (!motivoAnulacion.trim()) {
-      Swal.fire({
+      Toast.fire({
         icon: 'error',
         title: 'Debe proporcionar un motivo de anulación.',
       });
@@ -228,7 +228,7 @@ export function Ventas() {
         motivo_anulacion: motivoAnulacion 
       });
       fetchVentas();
-      Swal.fire({
+      Toast.fire({
         icon: 'success',
         title: 'La venta ha sido anulada correctamente.',
       });
@@ -236,7 +236,7 @@ export function Ventas() {
       setMotivoAnulacion('');
     } catch (error) {
       console.error("Error al anular la venta:", error.response?.data || error.message);
-      Swal.fire({
+      Toast.fire({
         icon: 'error',
         title: `Hubo un problema al anular la venta: ${error.response?.data?.error || error.message}`,
       });
@@ -511,48 +511,51 @@ export function Ventas() {
       {/* Ejecutar la generación del reporte cuando el estado lo indique */}
       {mostrarReporteVentas && <ReporteVentas />}
     
-      {/* Modal para capturar motivo de anulación */}
-      {cancelOpen && (
-        <Dialog open={true} handler={() => setCancelOpen(false)}
-          className="max-w-xs w-11/12 bg-white rounded-lg shadow-lg" size="xs">
-        
-          <DialogHeader className="bg-gray-100 text-gray-800 p-3 rounded-t-lg border-b border-gray-300">
-            <Typography variant="h6" className="font-semibold">
-              Motivo de Anulación
-            </Typography>
-          </DialogHeader>
+    {/* Modal para capturar motivo de anulación */}
+{cancelOpen && (
+  <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70">
+    <div className="bg-white p-6 rounded-xl shadow-2xl max-w-md w-full transition-transform transform scale-100 hover:scale-105">
+      <Typography variant="h5" className="font-semibold mb-4 ">
+        Motivo de Anulación de la Venta
+      </Typography>
+      <textarea
+        placeholder="Escribe el motivo de anulación aquí..."
+        value={motivoAnulacion}
+        onChange={(e) => setMotivoAnulacion(e.target.value)}
+        className={`w-full p-4 border ${motivoAnulacion.length < 5 || motivoAnulacion.length > 30 ? 'border-red-500' : 'border-gray-300'} rounded-lg mb-4 resize-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 outline-none transition duration-200`}
+        rows={4}
+        required
+      />
       
-          <DialogBody divider className="p-4 bg-white">
-            <textarea
-              placeholder="Escribe el motivo de anulación aquí..."
-              value={motivoAnulacion}
-              onChange={(e) => setMotivoAnulacion(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg mb-4 resize-none"
-              rows={4}
-            />
-          </DialogBody>
-      
-          <div className="flex justify-end gap-2 p-3 bg-gray-100 rounded-b-lg border-t border-gray-300">
-            <Button
-              variant="text"
-              className="btncancelarm"
-              size="sm"
-              onClick={() => setCancelOpen(false)}
-            >
-              Cancelar
-            </Button>
-            <Button
-              variant="gradient"
-              className="btnagregarm"
-              size="sm"
-              onClick={handleCancelVenta}
-            >
-              Anular Compra
-            </Button>
-          </div>
-        </Dialog>
+      {motivoAnulacion.length < 5 && (
+        <p className="text-red-500 text-sm">El motivo debe tener al menos 5 letras.</p>
       )}
-    
+      {motivoAnulacion.length > 30 && (
+        <p className="text-red-500 text-sm">El motivo no puede tener más de 30 letras.</p>
+      )}
+      <div className="flex justify-end gap-3 mt-4">
+        <Button
+          variant="text"
+          className="btncancelarm text-white"
+          size="sm"
+          onClick={() => setCancelOpen(false)}
+        >
+          Cancelar
+        </Button>
+        <Button
+          variant="gradient"
+          className="btnagregarm bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition duration-200"
+          size="sm"
+          disabled={motivoAnulacion.length < 5 || motivoAnulacion.length > 30} // Deshabilitar el botón si no cumple la validación
+          onClick={handleCancelVenta}
+        >
+          Anular Venta
+        </Button>
+      </div>
+    </div>
+  </div>
+)}
+
       {/* Modal de Detalles de la Venta */}
       <Dialog open={detailsOpen} handler={() => setDetailsOpen(false)} className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
         <DialogHeader className="text-lg font-semibold text-gray-800 border-b border-gray-300">

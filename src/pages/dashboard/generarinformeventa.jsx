@@ -221,9 +221,9 @@ export function GenerarInformeVenta({ onCancel }) {
         label: 'Cantidad Vendida',
         data: productosData,
         backgroundColor: [
-          '#AE017E', 
-          '#7A0177',
-          '#49006A', 
+          '#AE017D91', 
+          '#7A017892',
+          '#48006A7C', 
          
         ],
         
@@ -241,9 +241,9 @@ export function GenerarInformeVenta({ onCancel }) {
         label: 'Total Comprado',
         data: clientesData,
         backgroundColor: [
-          '#AE017E', 
-          '#7A0177', 
-          '#49006A', 
+          '#AE017D91', 
+          '#7A017892', 
+          '#48006A7C', 
           
         ],
         borderColor: [
@@ -264,9 +264,9 @@ export function GenerarInformeVenta({ onCancel }) {
     scales: {
       y: {
         beginAtZero: true,
-        max: 1000,
+        max: 15,
         ticks: {
-          stepSize: 200,
+          stepSize: 100,
         },
       },
     },

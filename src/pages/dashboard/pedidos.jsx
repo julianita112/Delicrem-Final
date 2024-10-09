@@ -434,7 +434,7 @@ export function Pedidos() {
 
 const DetallesPedido = ({ pedido, productos, estados, onClose }) => (
   <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
-    <Typography className="text-black p-2 text-lg mb-4">Detalles del Pedido</Typography>
+    <Typography className="text-black p-2 text-xl mb-4 font-semibold">Detalles del Pedido</Typography>
 
     {/* Información del Cliente */}
     {pedido.clientesh && (
@@ -473,7 +473,7 @@ const DetallesPedido = ({ pedido, productos, estados, onClose }) => (
 
     {/* Información del Pedido */}
     <div className="mb-6">
-      <Typography className="text-black p-2 text-lg mb-2">Información del Pedido</Typography>
+      <Typography className="text-black p-2 text-lg mb-4 ">Información del Pedido</Typography>
       <table className="min-w-full">
         <tbody>
           <tr>
@@ -528,7 +528,7 @@ const DetallesPedido = ({ pedido, productos, estados, onClose }) => (
 
     {/* Botón para Cerrar */}
     <div className="mt-4 flex justify-end">
-      <Button variant="gradient" color="blue-gray" onClick={onClose}>
+      <Button  className="btncancelarm" size="sm"color="blue-gray" onClick={onClose}>
         Cerrar
       </Button>
     </div>

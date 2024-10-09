@@ -38,6 +38,7 @@ export function CrearPedido({ clientes, productos, fetchPedidos, onCancel }) {
   const [ventas, setVentas] = useState([]); // Estado para almacenar las ventas
   const [loadingVentas, setLoadingVentas] = useState(true); // Estado de carga para ventas
 
+  // useEffect para obtener las ventas de la API cuando el componente se monte
   useEffect(() => {
     const fetchVentas = async () => {
       try {
@@ -52,8 +53,6 @@ export function CrearPedido({ clientes, productos, fetchPedidos, onCancel }) {
 
     fetchVentas();
   }, []);
-
-  
 
   const validateFields = () => {
     const newErrors = {};
@@ -81,63 +80,41 @@ export function CrearPedido({ clientes, productos, fetchPedidos, onCancel }) {
     });
     setErrors(newErrors);
   };
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     const updatedValue = name === 'id_cliente' ? value : value.trim();
-    // Actualiza el estado del pedido
+    
+    // Update state
     setSelectedPedido({ ...selectedPedido, [name]: updatedValue });
-    // Limpia errores específicos
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      id_cliente: undefined,
-      fecha_entrega: undefined,
-    }));
-  
-    // Valida campos
+    
+    // Validate fields
     validateFields();
   };
 
-const handleDetalleChange = (index, e) => {
-  const { name, value } = e.target;
-  const detalles = [...selectedPedido.detallesPedido];
+  const handleDetalleChange = (index, e) => {
+    const { name, value } = e.target;
+    const detalles = [...selectedPedido.detallesPedido];
 
-  if (name === 'id_producto') {
-    const productoSeleccionado = productos.find(p => p.id_producto === parseInt(value));
-    detalles[index].precio_unitario = productoSeleccionado ? productoSeleccionado.precio : "";
-  }
-  validateField(`${name}_${index}`, value); 
-  detalles[index][name] = value;
-
-  // Validación en tiempo real
-  if (name === 'cantidad' || name === 'precio_unitario') {
-    const cantidad = parseInt(detalles[index].cantidad) || 0;
-    const precioUnitario = parseFloat(detalles[index].precio_unitario) || 0;
-    detalles[index].subtotal = cantidad * precioUnitario;
-
-    // Validación para la cantidad y precio unitario
-    if (name === 'cantidad') {
-      if (cantidad <= 0) {
-        setErrors(prevErrors => ({ ...prevErrors, [`cantidad_${index}`]: "La cantidad debe ser un número positivo" }));
-      } else {
-        setErrors(prevErrors => ({ ...prevErrors, [`cantidad_${index}`]: undefined }));
-      }
+    if (name === 'id_producto') {
+      const productoSeleccionado = productos.find(p => p.id_producto === parseInt(value));
+      detalles[index].precio_unitario = productoSeleccionado ? productoSeleccionado.precio : "";
     }
-    if (name === 'precio_unitario') {
-      if (precioUnitario <= 0) {
-        setErrors(prevErrors => ({ ...prevErrors, [`precio_unitario_${index}`]: "El precio unitario debe ser un número positivo" }));
-      } else {
-        setErrors(prevErrors => ({ ...prevErrors, [`precio_unitario_${index}`]: undefined }));
-      }
+
+    detalles[index][name] = value;
+
+    if (name === 'cantidad' || name === 'precio_unitario') {
+      const cantidad = parseInt(detalles[index].cantidad) || 0;
+      const precioUnitario = parseFloat(detalles[index].precio_unitario) || 0;
+      detalles[index].subtotal = cantidad * precioUnitario;
     }
-  }
 
-  setSelectedPedido({ ...selectedPedido, detallesPedido: detalles });
-  updateTotal(detalles);
-  validateFields(); // Validación después de cambiar el detalle
-};
+    setSelectedPedido({ ...selectedPedido, detallesPedido: detalles });
+    updateTotal(detalles);
 
+    // Validate fields
+    validateFields();
+  };
 
   const Toast = Swal.mixin({
     toast: true,
@@ -174,8 +151,8 @@ const handleDetalleChange = (index, e) => {
   };
 
   const handleSave = async () => {
-    validateFields(); // Agrega esto al principio
-    const newErrors = { ...errors };
+    // Validaciones previas
+    const newErrors = {};
     if (!selectedPedido.id_cliente) {
         newErrors.id_cliente = "El cliente es obligatorio";
     }
@@ -200,25 +177,33 @@ const handleDetalleChange = (index, e) => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length > 0) {
-        Swal.fire({
-            title: "Error",
-            text: "Por favor, complete todos los campos requeridos correctamente.",
-            icon: "error",
+        // Si hay errores, mostrar alerta y no guardar el pedido
+        Toast.fire({
+          icon: "error",
+          title: "Por favor, completa todos los campos correctamente.",
         });
         return;
     }
+
+    // Nueva lógica para verificar si la cantidad total de productos vendidos en la fecha excede el límite
     const fechaEntrega = selectedPedido.fecha_entrega;
-    const cantidadTotalVendidaEnFecha = ventas  // Calcular la cantidad total de productos vendidos para la fecha de entrega seleccionada
+
+    // Calcular la cantidad total de productos vendidos para la fecha de entrega seleccionada
+    const cantidadTotalVendidaEnFecha = ventas
         .filter(venta => venta.fecha_entrega.split('T')[0] === fechaEntrega) // Filtra ventas por fecha de entrega
         .reduce((acc, venta) => {
             // Suma la cantidad de cada detalle de venta
             return acc + venta.detalles.reduce((sum, detalle) => sum + detalle.cantidad, 0);
         }, 0);
 
+    // Calcular la cantidad de la nueva compra (pedido)
     const cantidadNuevaCompra = selectedPedido.detallesPedido.reduce((acc, detalle) => acc + parseInt(detalle.cantidad), 0);
+
     const cantidadTotalFinal = cantidadTotalVendidaEnFecha + cantidadNuevaCompra;
     const disponibilidadRestante = 2000 - cantidadTotalVendidaEnFecha;
-    if (cantidadTotalFinal > 2000) {  // Si supera el límite, mostrar alerta
+
+    // Si supera el límite, mostrar alerta
+    if (cantidadTotalFinal > 2000) {
         Swal.fire({
             title: "Error",
             text: `La cantidad total de productos para la fecha ${fechaEntrega} excede el límite de 2000 unidades. Actualmente, solo puedes agregar ${disponibilidadRestante} unidades más.`,
@@ -226,6 +211,8 @@ const handleDetalleChange = (index, e) => {
         });
         return;
     }
+
+    // Si no supera el límite, continuar guardando el pedido
     const pedidoToSave = {
         id_cliente: parseInt(selectedPedido.id_cliente),
         numero_pedido: selectedPedido.numero_pedido,
@@ -234,12 +221,13 @@ const handleDetalleChange = (index, e) => {
         id_estado: selectedPedido.id_estado, // Asegúrate de asignar el estado correctamente
         detallesPedido: selectedPedido.detallesPedido.map(detalle => ({
             id_producto: parseInt(detalle.id_producto),
-            cantidad: parseInt(detalle.cantidad),  // Si no supera el límite, continuar guardando el pedido
+            cantidad: parseInt(detalle.cantidad),
             precio_unitario: parseFloat(detalle.precio_unitario),
             subtotal: parseFloat(detalle.subtotal)
         })),
         total: selectedPedido.total
     };
+
     try {
         await axios.post("http://localhost:3000/api/pedidos", pedidoToSave);
         Toast.fire({
@@ -259,6 +247,7 @@ const handleDetalleChange = (index, e) => {
     }
 };
 
+
   return (
     <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">      
           <div
@@ -271,187 +260,209 @@ const handleDetalleChange = (index, e) => {
           >
             Crear Pedido
           </div>
+          
+          
       <DialogBody divider className="flex flex-col max-h-[100vh] overflow-hidden">
      <div className="flex flex-col gap-4 w-full p-4 bg-white rounded-lg shadow-sm">
-     <div className="flex gap-4">
-  {/* Mostrar un mensaje de carga mientras se obtienen las ventas */}
-  {loadingVentas && (
-    <Typography variant="h6" color="blue">
-      Cargando ventas...
-    </Typography>
-  )}
-  <div className="flex flex-col gap-2 w-1/2">
-    <label className="block text-sm font-medium text-gray-700">Cliente:</label>
-    <Select
-      name="id_cliente"
-      value={selectedPedido.id_cliente}
-      onChange={(value) => handleChange({ target: { name: 'id_cliente', value } })}
+  <div className="flex gap-4">
+          {/* Mostrar un mensaje de carga mientras se obtienen las ventas */}
+          {loadingVentas && (
+            <Typography variant="h6" color="blue">
+              Cargando ventas...
+            </Typography>
+          )}
+           <div className="flex flex-col gap-2 w-1/2">
+            <label className="block text-sm font-medium text-gray-700">Cliente:</label>
+            <Select
+              name="id_cliente"
+              value={selectedPedido.id_cliente}
+              onChange={(e) => handleChange({ target: { name: 'id_cliente', value: e } })}
+              className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-0"
+              required
+            >
+              {clientes
+                .filter(cliente => cliente.estado)
+                .map(cliente => (
+                  <Option key={cliente.id_cliente} value={cliente.id_cliente}>
+                    {`${cliente.nombre} - ${cliente.numero_documento}`} {/* Mostrar nombre y número de documento */}
+                  </Option>
+                ))}
+            </Select>
+            {errors.id_cliente && (
+              <p className="text-red-500 text-xs mt-1">{errors.id_cliente}</p>
+            )}
+          </div>
 
-      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-0"
-      required
-    >
-      {clientes
-        .filter(cliente => cliente.estado)
-        .map(cliente => (
-          <Option key={cliente.id_cliente} value={cliente.id_cliente}>
-            {`${cliente.nombre} - ${cliente.numero_documento}`} {/* Mostrar nombre y número de documento */}
-          </Option>
-        ))}
-    </Select>
-    {errors.id_cliente && (
-      <p className="text-red-500 text-xs mt-1">{errors.id_cliente}</p>
-    )}
-  </div>
-  <div className="flex flex-col gap-2 w-1/2">
-    <label className="block text-sm font-medium text-gray-700">Nro. Pedido:</label>
-    <Input
-      label="Número de Pedido"
-      name="numero_pedido"
-      type="text"
-      value={selectedPedido.numero_pedido}
-      onChange={handleChange}
-      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-0"
-      disabled
-    />
-  </div>
-</div>
-<div className="flex gap-4">
-  <div className="flex flex-col gap-2 w-1/2">
-    <label className="block text-sm font-medium text-gray-700">Fecha de Entrega:</label>
-    <Input
-      name="fecha_entrega"
-      type="date"
-      value={selectedPedido.fecha_entrega}
-      onChange={handleChange}
-      className="w-full text-xs"
-      required
-    />
-    {errors.fecha_entrega && (
-      <p className="text-red-500 text-xs mt-1">{errors.fecha_entrega}</p>
-    )}
-  </div>
-</div>
+          <div className="flex flex-col gap-2 w-1/2">
+            <label className="block text-sm font-medium text-gray-700">Nro. Pedido:</label>
+            <Input
+              label="Número de Pedido"
+              name="numero_pedido"
+              type="text"
+              value={selectedPedido.numero_pedido}
+              onChange={handleChange}
+             className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-0"
+              disabled
+            />
+          </div>
+          </div>
 
+          <div className="flex gap-4">
+          <div className="flex flex-col gap-2 w-1/2">
+            <label className="block text-sm font-medium text-gray-700">Fecha de Entrega:</label>
+            <Input
+              name="fecha_entrega"
+              type="date"
+              value={selectedPedido.fecha_entrega}
+              onChange={handleChange}
+              className="w-full text-xs"
+              required
+            />
+            {errors.fecha_entrega && (
+              <p className="text-red-500 text-xs mt-1">{errors.fecha_entrega}</p>
+            )}
+          </div>
+        </div>
+
+
+{/* Columna derecha */}
 <div className="w-full p-4 bg-white rounded-lg shadow-lg">
-  <Typography variant="h6" color="black" className="text-lg font-semibold mb-4">
-    Agregar Productos
-  </Typography>
-  <div className="overflow-x-auto max-h-64">
-    <table className="min-w-full table-auto border-collapse">
+<Typography variant="h6" color="black" className="text-lg font-semibold mb-4">
+Agregar Productos
+          </Typography>
+          
+          <div className="overflow-x-auto max-h-64">
+          <table className="min-w-full table-auto border-collapse">
       <thead>
         <tr className="bg-gray-100">
-          {/* Aquí podrías agregar encabezados si lo deseas */}
+          
         </tr>
       </thead>
       <tbody className="divide-y divide-gray-200">
-        {selectedPedido.detallesPedido.map((detalle, index) => (
-          <tr key={index} className="flex flex-col md:flex-row items-start gap-4 mb-4 p-4 bg-white rounded-lg shadow-sm">
-            <td className="px-4 py-2">
-              <label className="block text-sm font-medium text-gray-700">Producto:</label>
-              <Select
-                name="id_producto"
-                value={detalle.id_producto}
-                onChange={(e) => handleDetalleChange(index, { target: { name: 'id_producto', value: e } })}
-                className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-0"
-                required
-              >
-                {productos
-                  .filter(producto => producto.estado)
-                  .map(producto => (
-                    <Option key={producto.id_producto} value={producto.id_producto}>
-                      {producto.nombre}
-                    </Option>
-                  ))}
-              </Select>
-              {errors[`producto_${index}`] && (
-                <p className="text-red-500 text-xs mt-1">{errors[`producto_${index}`]}</p>
-              )}
-            </td>
-            <td className="px-4 py-2">
-              <label className="block text-sm font-medium text-gray-700">Cantidad:</label>
-              <Input
-                name="cantidad"
-                type="number"
-                required
-                value={detalle.cantidad}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value >= 0) {
-                    handleDetalleChange(index, e); // Solo se actualiza si el valor es >= 0
-                  }
-                }}
-                className="text-sm w-24 p-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-0"
-              />
-              {errors[`cantidad_${index}`] && (
-                <p className="text-red-500 text-xs mt-1">{errors[`cantidad_${index}`]}</p>
-              )}
-            </td>
-            <td className="px-4 py-2">
-              <label className="block text-sm font-medium text-gray-700">Precio Unitario:</label>
-              <Input
-                name="precio_unitario"
-                type="number"
-                disabled
-                value={detalle.precio_unitario}
-                onChange={(e) => handleDetalleChange(index, e)}
-                className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-0"
-                style={{ width: '200px', padding: '10px' }}
-              />
-              {errors[`precio_unitario_${index}`] && (
-                <p className="text-red-500 text-xs mt-1">{errors[`precio_unitario_${index}`]}</p>
-              )}
-            </td>
-            <td className="-px-12 py-2">
-              <label className="block text-sm font-medium text-gray-700">Subtotal:</label>
-              <input
-                name="subtotal"
-                type="text"
-                disabled
-                value={`$${(detalle.subtotal || 0).toFixed(2)}`}
-                readOnly
-                className="text-sm bg-gray-100 border border-gray-300 rounded-lg" // Elimina el ancho fijo
-                style={{ width: '120px', padding: '10px' }}
-              />
-            </td>
-            {/* Botón de eliminar (Trash Icon) alineado a la derecha */}
-            <td className="px-4 py-2 text-right">
+
+          {selectedPedido.detallesPedido.map((detalle, index) => (
+              <tr key={index} className="flex flex-col md:flex-row items-start gap-4 mb-4 p-4 bg-white rounded-lg shadow-sm">
+                <td className="px-4 py-2">
+                {/* Producto y Cantidad en la misma fila */}
+                  <label className="block text-sm font-medium text-gray-700">Producto:</label>
+                  <Select
+                    name="id_producto"
+                    value={detalle.id_producto}
+                    onChange={(e) => handleDetalleChange(index, { target: { name: 'id_producto', value: e } })}
+                      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-0"
+                    required
+                  >
+                    {productos
+                      .filter(producto => producto.estado)
+                      .map(producto => (
+                        <Option key={producto.id_producto} value={producto.id_producto}>
+                          {producto.nombre}
+                        </Option>
+                      ))}
+                  </Select>
+                  {errors[`producto_${index}`] && (
+                    <p className="text-red-500 text-xs mt-1">{errors[`producto_${index}`]}</p>
+                  )}
+                   </td>
+
+                   <td className="px-4 py-2">
+                  <label className="block text-sm font-medium text-gray-700">Cantidad:</label>
+                  <Input
+                    name="cantidad"
+                    type="number"
+                    required
+                    value={detalle.cantidad}
+                    onChange={(e) => {
+                      // Validar que el valor no sea negativo
+                      const value = e.target.value;
+                      if (value >= 0) {
+                        handleDetalleChange(index, e); // Solo se actualiza si el valor es >= 0
+                      }}}
+                      className="text-sm w-24 p-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-0"
+                    
+                  />
+                  {errors[`cantidad_${index}`] && (
+                    <p className="text-red-500 text-xs mt-1">{errors[`cantidad_${index}`]}</p>
+                  )}
+                </td>
+
+              {/* Precio Unitario y Subtotal en la misma fila */}
+            
+              <td className="px-4 py-2">
+                  <label className="block text-sm font-medium text-gray-700">Precio Unitario:</label>
+                  <Input
+                    name="precio_unitario"
+                    type="number"
+                    disabled
+                    value={detalle.precio_unitario}
+                    onChange={(e) => handleDetalleChange(index, e)}
+                    className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-0"
+                    style={{ width: '200px', padding: '10px' }} 
+                   
+                  />
+                  {errors[`precio_unitario_${index}`] && (
+                    <p className="text-red-500 text-xs mt-1">{errors[`precio_unitario_${index}`]}</p>
+                  )}
+               </td>
+
+               <td className="-px-12 py-2">
+                  <label className="block text-sm font-medium text-gray-700">Subtotal:</label>
+                  <input
+                    name="subtotal"
+                    type="text"
+                    disabled
+                    value={`$${(detalle.subtotal || 0).toFixed(2)}`}
+                    readOnly
+                    className="text-sm bg-gray-100 border border-gray-300 rounded-lg" // Elimina el ancho fijo
+                    style={{ width: '120px', padding: '10px' }} 
+                  />
+              </td>
+              
+
+              {/* Botón de eliminar (Trash Icon) alineado a la derecha */}
+              <td className="px-4 py-2 text-righ">
               <IconButton
                 color="red"
-                onClick={() => handleRemoveDetalle(index)}
-                className="btncancelarm"
-                size="sm"
-              >
-                <TrashIcon className="h-5 w-5" />
-              </IconButton>
-            </td>
-          </tr>
-        ))}
-        {errors.detallesPedido && (
-          <p className="text-red-500 text-xs mb-4">{errors.detallesPedido}</p>
-        )}
-      </tbody>
+                  onClick={() => handleRemoveDetalle(index)}
+                    className="btncancelarm"
+                      size="sm"
+                >
+                  <TrashIcon className="h-5 w-5" />
+                </IconButton>
+                </td>
+                    </tr>
+          ))}
+
+          {errors.detallesPedido && (
+            <p className="text-red-500 text-xs mb-4">{errors.detallesPedido}</p>
+          )}
+    </tbody>
     </table>
-  </div>
+  </div>   
 
-
+          {/* Botón para agregar detalle */}
           <div className="flex justify-end mt-4">
               <Button 
+              
               size="sm" 
               onClick={handleAddDetalle}
                 className="flex items-center gap-2 bg-black text-white hover:bg-pink-800 px-4 py-2 rounded-md"
             >
               <PlusIcon className="h-5 w-5" />
-      Agregar Insumo
+      Agregar Producto
     </Button>
             </div>
+
             <div className="flex justify-end mt-4">
             <Typography variant="h6" color="blue-gray">
-              Total de la Compra: ${(selectedPedido.total || 0).toFixed(2)}
+              Total del Pedido: ${(selectedPedido.total || 0).toFixed(2)}
             </Typography>
           </div>
         </div>
       </div>
+
       </DialogBody>
+
       <div className="bg-white p-4 flex justify-end gap-4 border-t border-gray-200">
         <Button
           variant="text"
