@@ -505,8 +505,8 @@ export function Insumos() {
         </CardBody>
       </Card>
 
-      <Dialog open={open} handler={handleOpen} className="max-w-md w-11/12 p-6 bg-white rounded-lg shadow-lg" size="xs">
-        <DialogHeader className="text-xl font-semibold text-black border-b border-gray-200 pb-4">
+      <Dialog open={open} handler={handleOpen} className="rounded-3xl max-w-md w-11/12 p-6 bg-white  shadow-lg" size="xs">
+        <DialogHeader className="text-2xl font-semibold text-black border-b border-gray-200 pb-4">
           {editMode ? "Editar Insumo" : "Crear Insumo"}
         </DialogHeader>
         <DialogBody divider className="space-y-4">

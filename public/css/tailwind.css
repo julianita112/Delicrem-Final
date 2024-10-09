@@ -130,6 +130,7 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important; /* Sombra */
   overflow: hidden; /* Evitar desbordamiento */
   z-index: 999 !important; /* Ajustar el z-index */
+  color:#000 !important;
 }
 
 .custom-modal .dialog-footer {

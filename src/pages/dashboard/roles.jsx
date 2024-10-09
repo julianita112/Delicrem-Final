@@ -439,8 +439,8 @@ export function Roles() {
         </CardBody>
       </Card>
 
-      <Dialog open={open} handler={handleOpen} className="custom-modal">
-        <DialogHeader>{editMode ? "Editar Rol" : "Crear Rol"}</DialogHeader>
+      <Dialog open={open} handler={handleOpen} className="custom-modal text-black rounded-3xl">
+        <DialogHeader className="text-2xl font-bold border-b border-gray-200 pb-4 text-black">{editMode ? "Editar Rol" : "Crear Rol"}</DialogHeader>
         <DialogBody divider className="overflow-auto max-h-[60vh]">
           <Input
             label="Nombre del rol"

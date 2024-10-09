@@ -473,10 +473,11 @@ export function Proveedores() {
       </Card>
 
       {/* Modal para crear/editar proveedor */}
-      <Dialog open={open} onClose={handleOpen} className="max-w-md w-11/12 p-6 bg-white rounded-xl shadow-lg" size="xs">
-        <DialogHeader className="text-xl font-semibold  border-b border-gray-200 pb-4 text-black">
-          {editMode ? "Editar Proveedor" : "Crear Proveedor"}
-        </DialogHeader>
+      <Dialog open={open} onClose={handleOpen} className="max-w-md w-11/12 p-6 bg-white rounded-3xl shadow-lg" size="xs">
+  <DialogHeader className="text-2xl font-bold border-b border-gray-200 pb-4 text-black">
+    {editMode ? "Editar Proveedor" : "Crear Proveedor"}
+  </DialogHeader>
+
         <DialogBody>
           <div className="flex flex-col space-y-3">
             <Input

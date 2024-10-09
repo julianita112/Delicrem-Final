@@ -209,7 +209,7 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
   };    
 
   return (
-    <div className="flex flex-col gap-6 p-6 bg-gray-50 rounded-lg shadow-lg">
+    <div className="rounded-3xl flex flex-col gap-6 p-6 bg-gray-50  shadow-lg">
       <div
         style={{
           fontSize: '1.5rem',
