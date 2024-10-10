@@ -160,26 +160,69 @@ export function GenerarInforme({ onCancel }) { // onCancel para manejar el botó
   const handleDescargarExcel = () => {
     // Crea los datos para el archivo Excel
     const datosExcel = [
-      { encabezado: "Informe de Compras", valor: "" },
-      { encabezado: "Fecha de Generación", valor: fechaGeneracion },
-      { encabezado: "Periodo", valor: `${fechaInicio} - ${fechaFin}` },
-      { encabezado: "Número de Compras Realizadas", valor: numeroCompras },
-      {},
-      { encabezado: "Insumos más comprados", valor: "" },
-      ...insumosMasComprados.map(insumo => ({
-        encabezado: insumo.nombre,
-        valor: insumo.cantidad,
-      })),
-      {},
-      { encabezado: "Proveedores con más compras", valor: "" },
-      ...proveedoresMasComprados.map(proveedor => ({
-        encabezado: proveedor.nombre,
-        valor: `$${proveedor.totalComprado.toFixed(2)}`,
-      })),
+        { encabezado: "Informe de Compras", valor: "" },
+        { encabezado: "Fecha de Generación", valor: fechaGeneracion },
+        { encabezado: "Periodo", valor: `${fechaInicio} - ${fechaFin}` },
+        { encabezado: "Número de Compras Realizadas", valor: numeroCompras },
+        {},
+        { encabezado: "Insumos más comprados", valor: "" },
+        ...insumosMasComprados.map(insumo => ({
+            encabezado: insumo.nombre,
+            valor: insumo.cantidad,
+        })),
+        {},
+        { encabezado: "Proveedores con más compras", valor: "" },
+        ...proveedoresMasComprados.map(proveedor => ({
+            encabezado: proveedor.nombre,
+            valor: `$${proveedor.totalComprado.toFixed(2)}`,
+        })),
     ];
 
     // Crea una hoja de trabajo (worksheet)
     const ws = XLSX.utils.json_to_sheet(datosExcel, { header: ["encabezado", "valor"] });
+
+    // Establecer anchos de columnas
+    const columnWidths = [
+        { wch: 40 }, // Ancho de la primera columna (encabezado)
+        { wch: 20 }, // Ancho de la segunda columna (valor)
+    ];
+    ws['!cols'] = columnWidths; // Asignar los anchos a la hoja
+
+    // Aplicar estilos a los encabezados y valores
+    const range = XLSX.utils.decode_range(ws['!ref']); // Obtener el rango de la hoja
+    for (let row = range.s.r; row <= range.e.r; row++) {
+        for (let col = range.s.c; col <= range.e.c; col++) {
+            const cell = ws[XLSX.utils.encode_cell({ r: row, c: col })];
+            if (cell) {
+                if (row === 0 || row === 1 || row === 2 || row === 3 || (row === 6 && col === 0) || (row === range.e.r - 2 && col === 0)) {
+                    // Estilo para encabezados
+                    cell.s = {
+                        font: { bold: true, sz: 14, color: { rgb: "FF000000" } }, // Texto negro
+                        fill: { fgColor: { rgb: "FFB2DFDB" } }, // Color de fondo verde pastel
+                        alignment: { horizontal: "center", vertical: "center" },
+                        border: {
+                            top: { style: "thin", color: { rgb: "FF000000" } },
+                            bottom: { style: "thin", color: { rgb: "FF000000" } },
+                            left: { style: "thin", color: { rgb: "FF000000" } },
+                            right: { style: "thin", color: { rgb: "FF000000" } },
+                        },
+                    };
+                } else {
+                    // Estilo normal para los valores
+                    cell.s = {
+                        font: { bold: true, sz: 12, color: { rgb: "FF000000" } }, // Texto negro
+                        alignment: { horizontal: "center", vertical: "center" }, // Centrar valores
+                        border: {
+                            top: { style: "thin", color: { rgb: "FF000000" } },
+                            bottom: { style: "thin", color: { rgb: "FF000000" } },
+                            left: { style: "thin", color: { rgb: "FF000000" } },
+                            right: { style: "thin", color: { rgb: "FF000000" } },
+                        },
+                    };
+                }
+            }
+        }
+    }
 
     // Crea un libro de trabajo (workbook)
     const wb = XLSX.utils.book_new();
@@ -187,7 +230,8 @@ export function GenerarInforme({ onCancel }) { // onCancel para manejar el botó
 
     // Genera y descarga el archivo Excel
     XLSX.writeFile(wb, `informe_compras_${fechaGeneracion}.xlsx`);
-  };
+};
+
 
   // Datos para las gráficas
   const insumosLabels = insumosMasComprados.map(insumo => insumo.nombre);
@@ -236,16 +280,12 @@ export function GenerarInforme({ onCancel }) { // onCancel para manejar el botó
   };
 
   const chartOptions = {
-    maintainAspectRatio: false,
-    responsive: true,
-    aspectRatio: 1.5,
+    maintainAspectRatio: false, // Mantener proporciones
+    responsive: true,           // Hacer el gráfico adaptable a su contenedor
+    aspectRatio: 1.5,           // Relación de aspecto del gráfico
     scales: {
       y: {
-        beginAtZero: true,
-        max: 110,
-        ticks: {
-          stepSize: 400,
-        },
+        beginAtZero: true,  
       },
     },
   };

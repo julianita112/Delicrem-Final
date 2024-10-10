@@ -32,6 +32,7 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
   const [loadingVentas, setLoadingVentas] = useState(true);
   const [clienteNombre, setClienteNombre] = useState("");
   const [errors, setErrors] = useState({});
+
   useEffect(() => {
     const fetchVentas = async () => {
       try {
@@ -107,7 +108,6 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
     return new Set(productos).size !== productos.length;
   };
   
-  
   const handleAddDetalle = () => {
     // Verificar si hay campos vacíos
     const hasEmptyFields = selectedPedido.detallesPedido.some(detalle => 
@@ -121,8 +121,6 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
       });
       return;
     }
-  
-    
   
     // Si todo está bien, agrega un nuevo detalle
     setSelectedPedido({
@@ -147,6 +145,21 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
       total
     }));
   };
+
+  useEffect(() => {
+    if (selectedPedido.id_estado === 6) {  // Si el estado es 'Pagado'
+      setSelectedPedido(prevState => ({
+        ...prevState,
+        fecha_pago: formatDate(new Date())  // Asignar la fecha actual
+      }));
+    } else {
+      setSelectedPedido(prevState => ({
+        ...prevState,
+        fecha_pago: ""  // Limpiar la fecha si no está pagado
+      }));
+    }
+  }, [selectedPedido.id_estado]);
+
   // Nueva función de validación en tiempo real
   const validateRealTime = () => {
     const newErrors = {};
@@ -179,7 +192,7 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
     });
     setErrors(newErrors); // Actualiza los errores en el estado
   };
-  // useEffect para validar en tiempo real
+
   useEffect(() => {
     validateRealTime();
   }, [selectedPedido]);
@@ -195,21 +208,6 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
     } else if (new Date(selectedPedido.fecha_entrega) < new Date(today)) {
       newErrors.fecha_entrega = "La fecha de entrega no puede ser en el pasado";
     }
-  
-    // Validar fecha de pago
-    if (selectedPedido.fecha_pago) {
-      // Si la fecha de pago ya está llena, no permitir editar
-      if (new Date(selectedPedido.fecha_pago).toISOString().split("T")[0] !== today) {
-        newErrors.fecha_pago = "La fecha de pago debe ser la fecha de hoy";
-      } else {
-        // Cambiar el estado del pedido a "pagado"
-        selectedPedido.estado_pago = "pagado";
-      }
-    } else {
-      // Si no hay fecha de pago y el campo está vacío
-      newErrors.fecha_pago = "La fecha de pago es obligatoria y debe ser la fecha de hoy";
-    }
-  
     // Validaciones adicionales para los detalles del pedido
     if (selectedPedido.detallesPedido.length === 0) {
       newErrors.detallesPedido = "Debe agregar al menos un detalle de pedido";
@@ -308,7 +306,7 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
     }
   };
   return (
-    <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">     
+    <div className="max-w-6xl mx-auto bg-white p-2 rounded-lg shadow-md">     
           <div
             style={{
               fontSize: '1.5rem',
@@ -321,7 +319,7 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
           </div>
    
        
-          <DialogBody divider className="flex flex-col max-h-[100vh] overflow-hidden">
+          <DialogBody divider className="flex flex-col max-h-[200vh] overflow-hidden">
      <div className="flex flex-col gap-4 w-full p-4 bg-white rounded-lg shadow-sm">
   <div className="flex gap-4">
   <div className="flex flex-col gap-2 w-1/2">
@@ -373,6 +371,7 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
         value={selectedPedido.fecha_pago || ""}
         onChange={handleChange}
         className="w-full text-xs"
+        disabled={selectedPedido.id_estado !== 6}  // Deshabilitar si el estado no es 'Pagado'
     />
     {errors.fecha_pago && (
         <p className="text-red-500 text-xs mt-1">{errors.fecha_pago}</p>
@@ -404,7 +403,7 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
             Detalles del Pedido
           </Typography>
   
-          <div className="overflow-x-auto max-h-64">
+          <div className="overflow-x-auto max-h-60">
           <table className="min-w-full table-auto border-collapse">
       <thead>
         <tr className="bg-gray-100">
@@ -502,37 +501,39 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
 </tbody>
     </table>
   </div>   
-
+  
     {/* Botón para agregar detalle */}
     <div className="flex justify-end mt-4">
-              <Button 
-              
-              size="sm" 
-              onClick={handleAddDetalle}
-              className="flex items-center gap-2 bg-black text-white hover:bg-pink-800 px-4 py-2 rounded-md"
-              >
-                <PlusIcon className="h-5 w-5" />
-      Agregar Producto
-    </Button>
-            </div>
+  <Button 
+    size="sm" 
+    onClick={handleAddDetalle}
+    className="flex items-center gap-2 bg-black text-white hover:bg-pink-800 px-4 py-2 rounded-md"
+  >
+    <PlusIcon className="h-5 w-5" />
+    Agregar Producto
+  </Button>
+</div>
+</div>
+  </div>
+
       <div className="flex justify-end mt-4">
             <Typography variant="h6" color="blue-gray">
               Total de la Compra: ${(selectedPedido.total || 0).toFixed(2)}
             </Typography>
-          </div>
-          </div>
+         
+          
           </div>
 </DialogBody>
     
   
-      <div className="flex justify-end gap-2 mt-4">
+<DialogFooter className=" p-4 flex justify-end gap-4 border-t border-gray-200">
         <Button variant="text" className="btncancelarm" size="sm" onClick={onCancel}>
           Cancelar
         </Button>
         <Button variant="gradient" className="btnagregarm" size="sm" onClick={handleSave}>
           Guardar Cambios
         </Button>
-      </div>
+        </DialogFooter>
     </div>
   );
 }

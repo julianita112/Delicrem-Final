@@ -199,18 +199,40 @@ export function GenerarInformeVenta({ onCancel }) {
         valor: `$${cliente.totalComprado.toFixed(2)}`,
       })),
     ];
-
+  
     // Crear hoja de trabajo (worksheet)
     const ws = XLSX.utils.json_to_sheet(datosExcel, { header: ["encabezado", "valor"] });
-
+  
+    // Establecer estilos para la hoja
+    const encabezados = [
+      "A1", "A2", "A3", "A4", "A6", "A8" // Índices de celdas para encabezados
+    ];
+  
+    encabezados.forEach(celda => {
+      // Asegúrate de que la celda está definida antes de aplicar estilos
+      if (ws[celda]) {
+        ws[celda].s = {
+          font: { bold: true, sz: 14 }, // Negrita y tamaño de fuente
+          alignment: { horizontal: "left" },
+        };
+      }
+    });
+  
+    // Ajustar el ancho de las columnas
+    const columnWidths = [
+      { wch: 40 }, // Encabezado (más ancho)
+      { wch: 20 }, // Valor
+    ];
+    ws["!cols"] = columnWidths;
+  
     // Crear libro de trabajo (workbook)
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Informe de Ventas");
-
+  
     // Descargar el archivo Excel
     XLSX.writeFile(wb, `informe_ventas_${fechaGeneracion}.xlsx`);
   };
-
+  
   const productosLabels = productosMasVendidos.map(producto => producto.nombre);
   const productosData = productosMasVendidos.map(producto => producto.cantidad);
 
@@ -258,15 +280,14 @@ export function GenerarInformeVenta({ onCancel }) {
   };
   
   const chartOptions = {
-    maintainAspectRatio: false,
-    responsive: true,
-    aspectRatio: 1.5,
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 15,
-        ticks: {
-          stepSize: 100,
+  maintainAspectRatio: false,
+  responsive: true,
+  aspectRatio: 1.5,
+  scales: {
+    y: {
+      beginAtZero: true, // Esto asegura que la escala comience desde 0
+      ticks: {
+        stepSize: 100, // Puedes ajustarlo o eliminarlo si no deseas una separación fija
         },
       },
     },

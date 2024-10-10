@@ -57,6 +57,52 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
     fetchPedidos();
   }, []);
 
+
+  useEffect(() => {
+    const validarCampos = () => {
+      const newErrors = {};
+  
+      // Validación de cliente
+      if (!selectedVenta.id_cliente) {
+        newErrors.id_cliente = "El cliente es obligatorio";
+      }
+  
+      // Validación de fecha de venta
+      const today = new Date().toISOString().split("T")[0]; 
+      if (!selectedVenta.fecha_venta) {
+        newErrors.fecha_venta = "La fecha de venta es obligatoria";
+      } else if (selectedVenta.fecha_venta !== today) {
+        newErrors.fecha_venta = "La fecha de venta debe ser hoy.";
+      }
+  
+      // Validación de fecha de entrega (obligatoria y debe ser a futuro)
+      const futureDate = (date) => new Date(date) > new Date(today);
+      if (!selectedVenta.fecha_entrega) {
+        newErrors.fecha_entrega = "La fecha de entrega es obligatoria";
+      } else if (!futureDate(selectedVenta.fecha_entrega)) {
+        newErrors.fecha_entrega = "La fecha de entrega debe ser en el futuro";
+      }
+  
+      // Validación de detalles de ventas
+      if (selectedVenta.detalleVentas.length === 0) {
+        newErrors.detalleVentas = "Debe agregar al menos un detalle de venta";
+      }
+  
+      selectedVenta.detalleVentas.forEach((detalle, index) => {
+        if (!detalle.id_producto) {
+          newErrors[`producto_${index}`] = "El producto es obligatorio";
+        }
+        if (!detalle.cantidad || detalle.cantidad <= 0) {
+          newErrors[`cantidad_${index}`] = "La cantidad es obligatoria y debe ser mayor que 0";
+        }
+      });
+  
+      setErrors(newErrors);
+    };
+  
+    validarCampos();
+  }, [selectedVenta]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSelectedVenta({ ...selectedVenta, [name]: value });
@@ -107,7 +153,7 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
 
   const handlePedidoChange = (numero_pedido) => {
     console.log("Número de pedido seleccionado:", numero_pedido);
-    const pedido = pedidos.find(p => String(p.numero_pedido) === numero_pedido);
+    const pedido = pedidos.find(p => p.numero_pedido === numero_pedido);
     if (pedido) {
       console.log("Pedido encontrado:", pedido);
       const detalles = pedido.detallesPedido.map(detalle => ({
@@ -143,10 +189,9 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
     // Validación de fecha de venta
     if (!selectedVenta.fecha_venta) {
       newErrors.fecha_venta = "La fecha de venta es obligatoria";
-    } else if (new Date(selectedVenta.fecha_venta).toISOString().split('T')[0] !== today) {
+    } else if (selectedVenta.fecha_venta !== today) {
       newErrors.fecha_venta = "La fecha de venta debe ser hoy.";
     }
-    
   
     // Validación de fecha de entrega (obligatoria y debe ser a futuro)
     if (!selectedVenta.fecha_entrega) {
@@ -251,25 +296,7 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
      <div className="flex flex-col gap-4 w-full p-4 bg-white rounded-lg shadow-sm">
   <div className="flex gap-4">     
     
-            <div className="flex flex-col gap-2 w-1/2">
-              <Select
-                label="Número de Pedido 'Opcional'"
-                name="numero_venta"
-                value={String(selectedVenta.numero_venta)} // Convierte a string
-                onChange={(value) => handlePedidoChange(value)}
-               className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-0"
-              >
-                {pedidos
-                  .filter(pedido => pedido.id_estado === 6) // Filtrar pedidos con estado "pagado"
-                  .map(pedido => (
-                    <Option key={pedido.numero_pedido} value={String(pedido.numero_pedido)}>
-
-                      {pedido.numero_pedido}
-                    </Option>
-                  ))}
-              </Select>
-              {errors.numero_venta && <p className="text-red-500 text-xs mt-1">{errors.numero_venta}</p>} {/* Mostrar error */}
-            </div>
+            
 <div className="flex flex-col gap-2 w-1/2">
             <Select
               label="Cliente"

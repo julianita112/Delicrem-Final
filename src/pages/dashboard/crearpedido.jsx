@@ -54,43 +54,47 @@ export function CrearPedido({ clientes, productos, fetchPedidos, onCancel }) {
     fetchVentas();
   }, []);
 
-  const validateFields = () => {
-    const newErrors = {};
-    if (!selectedPedido.id_cliente) {
-      newErrors.id_cliente = "El cliente es obligatorio";
-    }
-    if (!selectedPedido.fecha_entrega) {
-      newErrors.fecha_entrega = "La fecha de entrega es obligatoria";
-    } else if (new Date(selectedPedido.fecha_entrega) < new Date()) {
-      newErrors.fecha_entrega = "La fecha de entrega debe ser a futuro";
-    }
-    if (selectedPedido.detallesPedido.length === 0) {
-      newErrors.detallesPedido = "Debe agregar al menos un detalle de pedido";
-    }
-    selectedPedido.detallesPedido.forEach((detalle, index) => {
-      if (!detalle.id_producto) {
-        newErrors[`producto_${index}`] = "El producto es obligatorio";
-      }
-      if (!detalle.cantidad || isNaN(detalle.cantidad) || detalle.cantidad <= 0) {
-        newErrors[`cantidad_${index}`] = "La cantidad debe ser un número positivo";
-      }
-      if (!detalle.precio_unitario || isNaN(detalle.precio_unitario) || detalle.precio_unitario <= 0) {
-        newErrors[`precio_unitario_${index}`] = "El precio unitario debe ser un número positivo";
-      }
-    });
-    setErrors(newErrors);
-  };
+// Realiza la validación cada vez que cambie 'selectedPedido'
+useEffect(() => {
+  validateFields();
+}, [selectedPedido]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    const updatedValue = name === 'id_cliente' ? value : value.trim();
-    
-    // Update state
-    setSelectedPedido({ ...selectedPedido, [name]: updatedValue });
-    
-    // Validate fields
-    validateFields();
-  };
+const validateFields = () => {
+  const newErrors = {};
+  if (!selectedPedido.id_cliente) {
+    newErrors.id_cliente = "El cliente es obligatorio";
+  }
+  if (!selectedPedido.fecha_entrega) {
+    newErrors.fecha_entrega = "La fecha de entrega es obligatoria";
+  } else if (new Date(selectedPedido.fecha_entrega) < new Date()) {
+    newErrors.fecha_entrega = "La fecha de entrega debe ser a futuro";
+  }
+  if (selectedPedido.detallesPedido.length === 0) {
+    newErrors.detallesPedido = "Debe agregar al menos un detalle de pedido";
+  }
+  selectedPedido.detallesPedido.forEach((detalle, index) => {
+    if (!detalle.id_producto) {
+      newErrors[`producto_${index}`] = "El producto es obligatorio";
+    }
+    if (!detalle.cantidad || isNaN(detalle.cantidad) || detalle.cantidad <= 0) {
+      newErrors[`cantidad_${index}`] = "La cantidad debe ser un número positivo";
+    }
+    if (!detalle.precio_unitario || isNaN(detalle.precio_unitario) || detalle.precio_unitario <= 0) {
+      newErrors[`precio_unitario_${index}`] = "El precio unitario debe ser un número positivo";
+    }
+  });
+  setErrors(newErrors);
+};
+
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  const updatedValue = name === 'id_cliente' ? value : value.trim();
+
+  // Update state
+  setSelectedPedido({ ...selectedPedido, [name]: updatedValue });
+
+  // Eliminar el validateFields de aquí, ya que ahora lo manejamos con useEffect
+};
 
   const handleDetalleChange = (index, e) => {
     const { name, value } = e.target;
@@ -185,10 +189,8 @@ export function CrearPedido({ clientes, productos, fetchPedidos, onCancel }) {
         return;
     }
 
-    // Nueva lógica para verificar si la cantidad total de productos vendidos en la fecha excede el límite
     const fechaEntrega = selectedPedido.fecha_entrega;
 
-    // Calcular la cantidad total de productos vendidos para la fecha de entrega seleccionada
     const cantidadTotalVendidaEnFecha = ventas
         .filter(venta => venta.fecha_entrega.split('T')[0] === fechaEntrega) // Filtra ventas por fecha de entrega
         .reduce((acc, venta) => {
@@ -247,7 +249,6 @@ export function CrearPedido({ clientes, productos, fetchPedidos, onCancel }) {
     }
 };
 
-
   return (
     <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">      
           <div
@@ -260,8 +261,6 @@ export function CrearPedido({ clientes, productos, fetchPedidos, onCancel }) {
           >
             Crear Pedido
           </div>
-          
-          
       <DialogBody divider className="flex flex-col max-h-[100vh] overflow-hidden">
      <div className="flex flex-col gap-4 w-full p-4 bg-white rounded-lg shadow-sm">
   <div className="flex gap-4">
@@ -306,7 +305,6 @@ export function CrearPedido({ clientes, productos, fetchPedidos, onCancel }) {
             />
           </div>
           </div>
-
           <div className="flex gap-4">
           <div className="flex flex-col gap-2 w-1/2">
             <label className="block text-sm font-medium text-gray-700">Fecha de Entrega:</label>
@@ -323,8 +321,6 @@ export function CrearPedido({ clientes, productos, fetchPedidos, onCancel }) {
             )}
           </div>
         </div>
-
-
 {/* Columna derecha */}
 <div className="w-full p-4 bg-white rounded-lg shadow-lg">
 <Typography variant="h6" color="black" className="text-lg font-semibold mb-4">
@@ -417,8 +413,6 @@ Agregar Productos
                     style={{ width: '120px', padding: '10px' }} 
                   />
               </td>
-              
-
               {/* Botón de eliminar (Trash Icon) alineado a la derecha */}
               <td className="px-4 py-2 text-righ">
               <IconButton
@@ -439,7 +433,6 @@ Agregar Productos
     </tbody>
     </table>
   </div>   
-
           {/* Botón para agregar detalle */}
           <div className="flex justify-end mt-4">
               <Button 

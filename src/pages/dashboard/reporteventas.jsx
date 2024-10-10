@@ -26,11 +26,24 @@ export function ReporteVentas() {
         "Fecha de Entrega": venta.fecha_entrega.split(" ")[0],
         "Estado": estadosDict[venta.id_estado] || "Desconocido",
         "Total": parseFloat(venta.total).toFixed(2),
-        "Pagado": venta.pagado ? "Sí" : "No",
+        
         "Anulación": venta.anulacion || "N/A",
       }));
 
       const worksheet = XLSX.utils.json_to_sheet(datosReporte);
+      // Ajustar el ancho de las columnas
+      const columnWidths = [
+        { wch: 20 }, // Número de Venta
+        { wch: 15 }, // Cliente
+        { wch: 13 }, // Fecha de Venta
+        { wch: 22 }, // Fecha de Entrega
+        { wch: 22}, // Estado
+        { wch: 15 }, // Total
+        { wch: 10 }, // Pagado
+        { wch: 20 }, // Anulación
+      ];
+      worksheet["!cols"] = columnWidths;
+
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte de Ventas");
 
