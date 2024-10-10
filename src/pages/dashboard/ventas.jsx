@@ -557,40 +557,40 @@ export function Ventas() {
 )}
 
       {/* Modal de Detalles de la Venta */}
-      <Dialog open={detailsOpen} handler={() => setDetailsOpen(false)} className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-        <DialogHeader className="text-lg font-semibold text-gray-800 border-b border-gray-300">
+      <Dialog open={detailsOpen} handler={() => setDetailsOpen(false)} className=" rounded-3xl max-w-3xl mx-auto p-6 bg-white shadow-lg">
+        <DialogHeader className="text-2x1 font-semibold text-black border-b border-gray-300">
           Detalles de la Venta
         </DialogHeader>
         <DialogBody divider className="overflow-y-auto max-h-[60vh] p-4">
           {selectedVenta.cliente && (
             <div className="mb-6">
-              <Typography variant="h6" color="blue-gray" className="font-semibold mb-2">
+              <Typography variant="h6" color="black" className="font-semibold mb-2">
                 Información del Cliente
               </Typography>
               <table className="w-full text-sm border-collapse">
                 <tbody>
                   <tr className="border-b">
-                    <td className="font-medium text-gray-700 py-2 px-4">ID Cliente:</td>
+                    <td className="font-semibold text-black py-2 px-4">ID Cliente:</td>
                     <td className="py-2 px-4">{selectedVenta.cliente.id_cliente}</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="font-medium text-gray-700 py-2 px-4">Nombre:</td>
+                    <td className="font-semibold text-black py-2 px-4">Nombre:</td>
                     <td className="py-2 px-4">{selectedVenta.cliente.nombre}</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="font-medium text-gray-700 py-2 px-4">Contacto:</td>
+                    <td className="font-semibold text-black py-2 px-4">Contacto:</td>
                     <td className="py-2 px-4">{selectedVenta.cliente.contacto}</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="font-medium text-gray-700 py-2 px-4">Email:</td>
+                    <td className="font-semibold text-black py-2 px-4">Email:</td>
                     <td className="py-2 px-4">{selectedVenta.cliente.email}</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="font-medium text-gray-700 py-2 px-4">Tipo de Documento:</td>
+                    <td className="font-semibold text-black py-2 px-4">Tipo de Documento:</td>
                     <td className="py-2 px-4">{selectedVenta.cliente.tipo_documento}</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="font-medium text-gray-700 py-2 px-4">Número de Documento:</td>
+                    <td className="font-semibold text-black py-2 px-4">Número de Documento:</td>
                     <td className="py-2 px-4">{selectedVenta.cliente.numero_documento}</td>
                   </tr>
                 </tbody>
@@ -598,39 +598,39 @@ export function Ventas() {
             </div>
           )}
           <div className="mb-6">
-            <Typography variant="h6" color="blue-gray" className="font-semibold mb-2">
+            <Typography variant="h6" color="black" className="font-semibold mb-2">
               Detalles de la Venta
             </Typography>
             <table className="w-full text-sm border-collapse">
               <tbody>
                 <tr className="border-b">
-                  <td className="font-medium text-gray-700 py-2 px-4">ID Venta:</td>
+                  <td className="font-semibold text-black py-2 px-4">ID Venta:</td>
                   <td className="py-2 px-4">{selectedVenta.id_venta}</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="font-medium text-gray-700 py-2 px-4">Número de Venta:</td>
+                  <td className="font-semibold text-black py-2 px-4">Número de Venta:</td>
                   <td className="py-2 px-4">{selectedVenta.numero_venta}</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="font-medium text-gray-700 py-2 px-4">Fecha de Venta:</td>
+                  <td className="font-semibold text-black py-2 px-4">Fecha de Venta:</td>
                   <td className="py-2 px-4">{selectedVenta.fecha_venta.split('T')[0]}</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="font-medium text-gray-700 py-2 px-4">Fecha de Entrega:</td>
+                  <td className="font-semibold text-black py-2 px-4">Fecha de Entrega:</td>
                   <td className="py-2 px-4">{selectedVenta.fecha_entrega.split('T')[0]}</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="font-medium text-gray-700 py-2 px-4">Estado:</td>
+                  <td className="font-semibold text-black py-2 px-4">Estado:</td>
                   <td className="py-2 px-4">
                     {estados.find(estado => estado.id_estado === selectedVenta.id_estado)?.nombre_estado || selectedVenta.id_estado}
                   </td>
                 </tr>
                 <tr className="border-b">
-                  <td className="font-medium text-gray-700 py-2 px-4">Total:</td>
-                  <td className="py-2 px-4">${selectedVenta.total.toFixed(2)}</td>
+                  <td className="font-semibold text-black  py-2 px-4">Total:</td>
+                  <td className="py-2 px-4  text-black ">${selectedVenta.total.toFixed(2)}</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="font-medium text-gray-700 py-2 px-4">Motivo de Anulación:</td>
+                  <td className="font-semibold text-black py-2 px-4">Motivo de Anulación:</td>
                   <td className="py-2 px-4">{selectedVenta.motivo_anulacion || "N/A"}</td>
                 </tr>
               </tbody>
@@ -638,27 +638,27 @@ export function Ventas() {
           </div>
           {/* Detalles de productos */}
           <div className="mb-6 overflow-x-auto">
-            <Typography variant="h6" color="blue-gray" className="font-semibold mb-2">
+            <Typography variant="h6" color="black" className="font-semibold mb-2">
               Detalles de Productos
             </Typography>
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="bg-gray-100 border-b">
-                  <th className="font-medium text-gray-700 py-2 px-4">ID Detalle</th>
-                  <th className="font-medium text-gray-700 py-2 px-4">Producto</th>
-                  <th className="font-medium text-gray-700 py-2 px-4">Cantidad</th>
-                  <th className="font-medium text-gray-700 py-2 px-4">Precio Unitario</th>
+                  <th className="font-medium text-black py-2 px-4">ID Detalle</th>
+                  <th className="font-medium text-black py-2 px-4">Producto</th>
+                  <th className="font-medium text-black py-2 px-4">Cantidad</th>
+                  <th className="font-medium text-black py-2 px-4">Precio Unitario</th>
                 </tr>
               </thead>
               <tbody>
                 {selectedVenta.detalleVentas.map((detalle) => (
                   <tr key={detalle.id_detalle_venta} className="border-b">
-                    <td className="py-2 px-4">{detalle.id_detalle_venta}</td>
-                    <td className="py-2 px-4">
+                    <td className="font-semibold text-center text-black py-2 px-4">{detalle.id_detalle_venta}</td>
+                    <td className="text-center py-2 px-4">
                       {productos.find(p => p.id_producto === detalle.id_producto)?.nombre || 'Producto no encontrado'}
                     </td>
-                    <td className="py-2 px-4">{detalle.cantidad}</td>
-                    <td className="py-2 px-4">${parseFloat(detalle.precio_unitario).toFixed(2)}</td>
+                    <td className=" text-center py-2 px-4">{detalle.cantidad}</td>
+                    <td className="text-center py-2 px-4">${parseFloat(detalle.precio_unitario).toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>

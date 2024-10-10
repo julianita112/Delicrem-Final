@@ -439,11 +439,11 @@ const DetallesPedido = ({ pedido, productos, estados, onClose }) => (
     {/* Información del Cliente */}
     {pedido.clientesh && (
       <div className="mb-6">
-        <Typography className="text-black p-2 text-lg mb-2">Información del Cliente</Typography>
+        <Typography className="text-black font-semibold p-2 text-lg mb-2">Información del Cliente</Typography>
         <table className="min-w-full">
           <tbody>
             <tr>
-              <td className="font-semibold">ID Cliente:</td>
+              <td className="font-semibold ">ID Cliente:</td>
               <td>{pedido.clientesh.id_cliente}</td>
             </tr>
             <tr>
@@ -473,7 +473,7 @@ const DetallesPedido = ({ pedido, productos, estados, onClose }) => (
 
     {/* Información del Pedido */}
     <div className="mb-6">
-      <Typography className="text-black p-2 text-lg mb-4 ">Información del Pedido</Typography>
+      <Typography className="text-black font-semibold p-2 text-lg mb-4 ">Información del Pedido</Typography>
       <table className="min-w-full">
         <tbody>
           <tr>
@@ -504,27 +504,28 @@ const DetallesPedido = ({ pedido, productos, estados, onClose }) => (
 
     {/* Detalles de Productos */}
     <div className="mb-6">
-      <Typography className="text-black p-2 text-lg mb-2">Detalles de Productos</Typography>
-      <table className="min-w-full">
-        <thead>
-          <tr>
-            <th className="font-semibold">Producto</th>
-            <th className="font-semibold">Cantidad</th>
+  <Typography className="text-black font-semibold p-2 text-lg mb-2">Detalles de Productos</Typography>
+  <table className="min-w-full">
+    <thead>
+      <tr>
+        <th className="text-black font-semibold text-center">Producto</th>
+        <th className="text-black font-semibold text-center">Cantidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      {pedido.detallesPedido.map((detalle, index) => {
+        const producto = productos.find(p => p.id_producto === detalle.id_producto);
+        return (
+          <tr key={index}>
+            <td className="text-center">{producto ? producto.nombre : 'Producto no encontrado'}</td>
+            <td className="text-center">{detalle.cantidad}</td>
           </tr>
-        </thead>
-        <tbody>
-          {pedido.detallesPedido.map((detalle, index) => {
-            const producto = productos.find(p => p.id_producto === detalle.id_producto);
-            return (
-              <tr key={index}>
-                <td>{producto ? producto.nombre : 'Producto no encontrado'}</td>
-                <td>{detalle.cantidad}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+        );
+      })}
+    </tbody>
+  </table>
+</div>
+
 
     {/* Botón para Cerrar */}
     <div className="mt-4 flex justify-end">
