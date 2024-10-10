@@ -196,16 +196,34 @@ export function Proveedores() {
     if (!currentData.nombre.trim()) {
       errors.nombre = 'El nombre del proveedor es requerido.';
       isValid = false;
-    } else if (currentData.nombre.trim().length < 4) {
+  } else if (currentData.nombre.trim().length < 4) {
       errors.nombre = 'El nombre del proveedor debe contener al menos 4 letras.';
       isValid = false;
-    } else if (currentData.nombre.trim().length > 20) {
+  } else if (currentData.nombre.trim().length > 20) {
       errors.nombre = 'El nombre del proveedor no puede tener más de 20 letras.';
       isValid = false;
-    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(currentData.nombre)) {
+  } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(currentData.nombre)) {
       errors.nombre = 'El nombre del proveedor solo puede contener letras y espacios.';
       isValid = false;
-    }
+  } else {
+      // Validación de duplicados
+      const normalizedNombre = currentData.nombre.trim().toLowerCase();
+      if (
+          proveedores.some((proveedor) => {
+              console.log(
+                  `Comparando: "${proveedor.nombre.toLowerCase()}" con "${normalizedNombre}"`
+              ); // Para depuración
+              return (
+                  proveedor.nombre.toLowerCase() === normalizedNombre &&
+                  proveedor.id_proveedor !== currentData.id_proveedor // Asegúrate de tener un id para comparar
+              );
+          })
+      ) {
+          errors.nombre = 'Ya existe un proveedor con este nombre.';
+          isValid = false;
+      }
+  }
+  
   
     // Validar tipo de documento
     if (!currentData.tipo_documento.trim()) {
@@ -217,10 +235,28 @@ export function Proveedores() {
     if (!currentData.numero_documento.trim()) {
       errors.numero_documento = 'El número de documento es requerido.';
       isValid = false;
-    } else if (!/^\d{7,10}$/.test(currentData.numero_documento)) {
+  } else if (!/^\d{7,10}$/.test(currentData.numero_documento)) {
       errors.numero_documento = 'El número de documento debe contener entre 7 y 10 dígitos numéricos.';
       isValid = false;
-    }
+  } else {
+      // Validación de duplicados
+      const normalizedNumeroDocumento = currentData.numero_documento.trim();
+      if (
+          proveedores.some((proveedor) => {
+              console.log(
+                  `Comparando: "${proveedor.numero_documento}" con "${normalizedNumeroDocumento}"`
+              ); // Para depuración
+              return (
+                  proveedor.numero_documento === normalizedNumeroDocumento &&
+                  proveedor.id_proveedor !== currentData.id_proveedor // Asegúrate de tener un id para comparar
+              );
+          })
+      ) {
+          errors.numero_documento = 'Ya existe un proveedor con este número de documento.';
+          isValid = false;
+      }
+  }
+  
   
     // Validar número de contacto
     if (!currentData.contacto.trim()) {

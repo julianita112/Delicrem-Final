@@ -10,23 +10,30 @@ import { PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import axios from "../../utils/axiosConfig";
-
 export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos, insumos }) {
   const [selectedFicha, setSelectedFicha] = useState(ficha);
   const [errors, setErrors] = useState({});
-
   useEffect(() => {
     setSelectedFicha(ficha);
   }, [ficha]);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSelectedFicha({ ...selectedFicha, [name]: value });
     validateField(name, value); // Validar en tiempo real
  }; 
-
-
-
+ useEffect(() => {
+  setSelectedFicha(ficha);
+  fetchExistingInsumos(); // Llamar a la función para obtener insumos existentes
+}, [ficha]);
+// Función para obtener insumos existentes
+const fetchExistingInsumos = async () => {
+  try {
+    const response = await axios.get("http://localhost:3000/api/insumos"); // Asegúrate de que esta URL es correcta
+    setExistingInsumos(response.data); // Guarda los insumos existentes
+  } catch (error) {
+    console.error("Error fetching insumos:", error);
+  }
+};
   const Toast = Swal.mixin({
     toast: true,
     position: "top-end",
@@ -38,7 +45,6 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
       toast.addEventListener("mouseleave", Swal.resumeTimer);
     },
   });
-
   const handleDetalleChange = (index, e) => {
     const { name, value } = e.target;
     const detalles = [...selectedFicha.detallesFichaTecnicat];
@@ -47,13 +53,11 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
     validateField(`${name}_${index}`, value); // Validar en tiempo real
   };
   
-
   const validateField = (name, value) => {
     const newErrors = { ...errors };
   
     // Validaciones para los campos de producto, descripción e insumos
     if (name === "descripcion") {
-
       // Validación para descripción
       if (!value) {
         newErrors.descripcion = "La descripción es requerida";
@@ -102,7 +106,6 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
       }
   }
   
-  
     // Validar duplicados de insumos
     if (hasDuplicateInsumos()) {
       newErrors.general = "No se pueden tener insumos duplicados.";
@@ -114,12 +117,16 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
     return Object.keys(newErrors).length === 0; // Retornar si no hay errores
   };
   
-  
     const hasDuplicateInsumos = () => {
       const insumosIds = selectedFicha.detallesFichaTecnicat.map(detalle => detalle.id_insumo);
       return insumosIds.some((id, index) => insumosIds.indexOf(id) !== index);
     };
-
+     // Nueva función para validar duplicados con insumos existentes
+  const validateWithExistingInsumos = () => {
+    const insumosIds = selectedFicha.detallesFichaTecnicat.map(detalle => detalle.id_insumo);
+    const duplicates = insumosIds.filter(id => existingInsumos.some(insumo => insumo.id_insumo === id));
+    return duplicates.length > 0;
+  };
   const handleAddDetalle = () => {
     // Verificar si hay campos vacíos
     const hasEmptyFields = selectedFicha.detallesFichaTecnicat.some(detalle => 
@@ -148,14 +155,11 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
     });
   };
   
-  
-
   const handleRemoveDetalle = (index) => {
     const detalles = [...selectedFicha.detallesFichaTecnicat];
     detalles.splice(index, 1);
     setSelectedFicha({ ...selectedFicha, detallesFichaTecnicat: detalles });
   };
-
   const validateForm = () => {
     const newErrors = {};
     if (!selectedFicha.descripcion) newErrors.descripcion = "La descripción es requerida";
@@ -166,16 +170,12 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
       if (!detalle.cantidad) newErrors[`cantidad_${index}`] = "La cantidad es requerida";
     });
 
-
     if (hasDuplicateInsumos()) {
       newErrors.general = "No se pueden tener insumos duplicados.";
     }
-
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
   const handleSave = async () => {
     if (!validateForm()) {
       Toast.fire({
@@ -184,12 +184,10 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
       });
       return;
     }
-
     const fichaToSave = {
       ...selectedFicha,
       detallesFichaTecnica: selectedFicha.detallesFichaTecnicat,
     };
-
     try {
       await axios.put(`http://localhost:3000/api/fichastecnicas/${selectedFicha.id_ficha}`, fichaToSave);
       Toast.fire({
@@ -207,7 +205,6 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
       }
     }
   };    
-
   return (
     <div className="rounded-3xl flex flex-col gap-6 p-6 bg-gray-50  shadow-lg">
       <div
@@ -220,7 +217,6 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
       >
         Editar Ficha Técnica
       </div>
-
       <DialogBody divider className="flex flex-col max-h-[100vh] overflow-hidden">
         {/* Sección Izquierda */}
         <div className="flex flex-col gap-4 w-full p-4 bg-white rounded-lg shadow-sm">
@@ -244,7 +240,6 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
             {errors.id_producto && <p className="text-red-500 text-xs mt-1">{errors.id_producto}</p>}
           </div>
           </div>
-
       <div className="flex gap-4">    
     <div className="flex flex-col gap-2 w-1/2">
             <label className="block text-sm font-medium text-black">Descripción de la ficha técnica:</label>
@@ -274,7 +269,6 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
           </div>
           </div>
           </div>
-
         {/* Tabla de Detalles de Insumos con barra de desplazamiento y diseño estético */}
         <div className="w-full p-4 bg-white rounded-lg shadow-lg">
   <Typography variant="h6" color="black" className="text-lg font-semibold mb-4">
@@ -310,7 +304,6 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
                   </select>
                   {errors[`id_insumo_${index}`] && <p className="text-red-500 text-xs mt-1">{errors[`id_insumo_${index}`]}</p>}
                   </td>
-
                   <td className="px-4 py-2">
                  
                   <input
@@ -328,7 +321,6 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
                   />
                   {errors[`cantidad_${index}`] && <p className="text-red-500 text-xs mt-1">{errors[`cantidad_${index}`]}</p>}
                   </td>
-
                   <td className="px-4 py-2 text-righ">
                 <IconButton
                 color="red"
@@ -343,7 +335,6 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
            </tbody>
     </table>
   </div>
-
   <div className="flex justify-end mt-4">
           <Button
             onClick={handleAddDetalle}
@@ -357,7 +348,6 @@ export function EditarFichaTecnica({ handleClose, fetchFichas, ficha, productos,
           </div>
         </div>
       </DialogBody>
-
       <DialogFooter className=" p-4 flex justify-end gap-4 border-t border-gray-200">
         <Button
           variant="text"

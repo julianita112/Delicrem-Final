@@ -38,12 +38,11 @@ const ClienteCrear = ({ selectedCliente, setSelectedCliente, fetchClientes, hand
       errors.nombre = 'El nombre es obligatorio.';
     } else if (cliente.nombre.length < 3) {
       errors.nombre = 'El nombre debe contener al menos 3 letras.';
-    } else if (cliente.nombre.length > 25) { // Nueva condición para limitar a 25 letras
-      errors.nombre = 'El nombre no puede tener más de 25 letras.'; // Mensaje de error correspondiente
+    } else if (cliente.nombre.length > 25) {
+      errors.nombre = 'El nombre no puede tener más de 25 letras.';
     } else if (/[^a-zA-Z\s]/.test(cliente.nombre)) {
       errors.nombre = 'El nombre solo puede contener letras y espacios.';
     }
-    
 
     // Validación para el número de documento
     if (!cliente.numero_documento) {
@@ -66,12 +65,11 @@ const ClienteCrear = ({ selectedCliente, setSelectedCliente, fetchClientes, hand
       errors.contacto = 'El número de teléfono es obligatorio.';
     } else if (cliente.contacto.length < 7) {
       errors.contacto = 'El número de teléfono debe contener al menos 7 caracteres.';
-    } else if (cliente.contacto.length > 10) { // Nueva condición para limitar a 10 dígitos
-      errors.contacto = 'El número de teléfono no puede tener más de 10 dígitos.'; // Mensaje de error correspondiente
+    } else if (cliente.contacto.length > 10) {
+      errors.contacto = 'El número de teléfono no puede tener más de 10 dígitos.';
     } else if (!/^\d+$/.test(cliente.contacto)) {
       errors.contacto = 'El número de teléfono solo puede contener números.';
     }
-    
 
     // Validación para el email
     if (!cliente.email) {
@@ -86,8 +84,21 @@ const ClienteCrear = ({ selectedCliente, setSelectedCliente, fetchClientes, hand
     return Object.keys(errors).length === 0;
   };
 
+  // Nueva función para verificar si el cliente ya existe
+  const checkClienteExists = async (nombre) => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/clientes");
+      const clientes = response.data;
+
+      return clientes.some(cliente => cliente.nombre.toLowerCase() === nombre.toLowerCase());
+    } catch (error) {
+      console.error("Error fetching clientes:", error);
+      return false; // Si hay un error en la consulta, asumimos que el cliente no existe
+    }
+  };
+
   const handleSave = async () => {
-    const isValid = await validateFields(selectedCliente); 
+    const isValid = await validateFields(selectedCliente);
     if (!isValid) {
       Toast.fire({
         icon: "error",
@@ -96,8 +107,15 @@ const ClienteCrear = ({ selectedCliente, setSelectedCliente, fetchClientes, hand
       return;
     }
 
-
-
+    // Verifica si el cliente ya existe
+    const exists = await checkClienteExists(selectedCliente.nombre);
+    if (exists) {
+      Toast.fire({
+        icon: "error",
+        title: "El nombre del cliente ya está registrado.",
+      });
+      return;
+    }
 
     try {
       if (selectedCliente.id_cliente) {
@@ -130,7 +148,6 @@ const ClienteCrear = ({ selectedCliente, setSelectedCliente, fetchClientes, hand
         {selectedCliente.id_cliente ? "Editar Cliente" : "Crear Cliente"}
       </Typography>
 
-      {/* Dividido en 2 columnas */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <Select
@@ -163,7 +180,6 @@ const ClienteCrear = ({ selectedCliente, setSelectedCliente, fetchClientes, hand
             value={selectedCliente.numero_documento}
             onChange={handleChange}
             required
-           
           />
           {formErrors.numero_documento && (
             <Typography className="text-red-500 text-sm mt-2">
@@ -179,7 +195,6 @@ const ClienteCrear = ({ selectedCliente, setSelectedCliente, fetchClientes, hand
             value={selectedCliente.nombre}
             onChange={handleChange}
             required
-            
           />
           {formErrors.nombre && (
             <Typography className="text-red-500 text-sm mt-2">
@@ -195,7 +210,6 @@ const ClienteCrear = ({ selectedCliente, setSelectedCliente, fetchClientes, hand
             value={selectedCliente.contacto}
             onChange={handleChange}
             required
-           
           />
           {formErrors.contacto && (
             <Typography className="text-red-500 text-sm mt-2">
@@ -211,7 +225,6 @@ const ClienteCrear = ({ selectedCliente, setSelectedCliente, fetchClientes, hand
             value={selectedCliente.email}
             onChange={handleChange}
             required
-         
           />
           {formErrors.email && (
             <Typography className="text-red-500 text-sm mt-2">
@@ -221,7 +234,6 @@ const ClienteCrear = ({ selectedCliente, setSelectedCliente, fetchClientes, hand
         </div>
       </div>
 
-      {/* Botones en la parte inferior */}
       <div className="flex justify-end mt-8 space-x-4">
         <Button className="btncancelarm" size="sm" color="red" onClick={handleHideCreateForm}>
           Cancelar

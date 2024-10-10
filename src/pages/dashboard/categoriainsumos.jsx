@@ -142,8 +142,10 @@ export function CategoriaInsumos() {
 
 
  // Validación de nombre duplicado
+ // Validación de nombre duplicado
  const isDuplicate = categorias.some((categoria) =>
-  categoria.nombre.toLowerCase() === selectedCategoria.nombre.trim().toLowerCase()
+  categoria.nombre.toLowerCase() === selectedCategoria.nombre.trim().toLowerCase() &&
+  categoria.id_categoria !== selectedCategoria.id_categoria // Verifica que no sea la misma categoría
 );
 
     if (!selectedCategoria.nombre.trim()) {
@@ -154,7 +156,7 @@ export function CategoriaInsumos() {
       newErrors.nombre = "El nombre no puede tener más de 15 caracteres.";
     } else if (!regexNombre.test(selectedCategoria.nombre)) {
       newErrors.nombre = "El nombre solo puede contener letras y espacios.";
-    } else if (isDuplicate && !editMode) { // Si es duplicado y no está en modo edición
+    } else if (isDuplicate) { // Si es duplicado y no está en modo edición
       newErrors.nombre = "Ya existe una categoría con este nombre.";
     }
 

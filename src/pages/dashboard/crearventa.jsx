@@ -111,30 +111,57 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
   const handleDetalleChange = (index, e) => {
     const { name, value } = e.target;
     const detalles = [...selectedVenta.detalleVentas];
-
+  
+    // Asignar precio unitario si se selecciona un producto
     if (name === 'id_producto') {
       const productoSeleccionado = productos.find(p => p.id_producto === parseInt(value));
       detalles[index].precio_unitario = productoSeleccionado ? productoSeleccionado.precio : "";
     }
-
+  
+    // Asignar el valor al detalle específico
     detalles[index][name] = value;
-
+  
+    // Recalcular subtotal cuando se cambie la cantidad o el precio unitario
     if (name === 'cantidad' || name === 'precio_unitario') {
       const cantidad = parseInt(detalles[index].cantidad) || 0;
       const precioUnitario = parseFloat(detalles[index].precio_unitario) || 0;
       detalles[index].subtotal = cantidad * precioUnitario;
     }
-
+  
+    // Verificar si el producto ya fue agregado para evitar duplicados
+    if (name === 'id_producto') {
+      const productoDuplicado = selectedVenta.detalleVentas.some((detalle, idx) => detalle.id_producto === parseInt(value) && idx !== index);
+      if (productoDuplicado) {
+        Toast.fire({
+          icon: "error",
+          title: "Este producto ya ha sido agregado. Elige otro."
+        });
+        return;
+      }
+    }
+  
     setSelectedVenta({ ...selectedVenta, detalleVentas: detalles });
     updateTotal(detalles);
   };
-
+  
   const handleAddDetalle = () => {
+    // Verificar si ya hay un producto sin seleccionar (id_producto vacío)
+    const existeProductoSinSeleccionar = selectedVenta.detalleVentas.some(detalle => detalle.id_producto === "");
+    if (existeProductoSinSeleccionar) {
+      Toast.fire({
+        icon: "error",
+        title: "Ya tienes un producto sin seleccionar. Completa el formulario antes de agregar otro."
+      });
+      return;
+    }
+  
+    // Añadir un nuevo detalle vacío para seleccionar un producto
     setSelectedVenta({
       ...selectedVenta,
       detalleVentas: [...selectedVenta.detalleVentas, { id_producto: "", cantidad: "", precio_unitario: "", subtotal: 0 }]
     });
   };
+  
 
   const handleRemoveDetalle = (index) => {
     const detalles = [...selectedVenta.detalleVentas];
@@ -203,6 +230,17 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
     // Validación de detalles de ventas
     if (selectedVenta.detalleVentas.length === 0) {
       newErrors.detalleVentas = "Debe agregar al menos un detalle de venta";
+    }
+
+    const productosIds = selectedVenta.detalleVentas.map(detalle => detalle.id_producto);
+    const productosUnicos = new Set(productosIds);
+    
+    if (productosIds.length !== productosUnicos.size) {
+      Toast.fire({
+        icon: "error",
+        title: "No puedes crear la venta. Hay productos duplicados."
+      });
+      return; // Evita proceder con la creación de la venta
     }
   
     selectedVenta.detalleVentas.forEach((detalle, index) => {

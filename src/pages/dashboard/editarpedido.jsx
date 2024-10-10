@@ -84,6 +84,7 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
     const { name, value } = e.target;
     setSelectedPedido({ ...selectedPedido, [name]: value });
   };
+  
   const handleDetalleChange = (index, e) => {
     const { name, value } = e.target;
     const detalles = [...selectedPedido.detallesPedido];
@@ -103,17 +104,14 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
     setSelectedPedido({ ...selectedPedido, detallesPedido: detalles });
     updateTotal(detalles);
   };
-  const hasDuplicateProductos = () => {
-    const productos = selectedPedido.detallesPedido.map(detalle => detalle.idProducto);
-    return new Set(productos).size !== productos.length;
-  };
+
   
   const handleAddDetalle = () => {
     // Verificar si hay campos vacíos
     const hasEmptyFields = selectedPedido.detallesPedido.some(detalle => 
       !detalle.id_producto || !detalle.cantidad
     );
-  
+
     if (hasEmptyFields) {
       Swal.fire({
         icon: 'error',
@@ -121,7 +119,16 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
       });
       return;
     }
-  
+
+    // Verificar duplicados antes de agregar
+    if (hasDuplicateProductos()) {
+      Swal.fire({
+        icon: 'error',
+        title: 'No se pueden agregar productos duplicados.',
+      });
+      return;
+    }
+
     // Si todo está bien, agrega un nuevo detalle
     setSelectedPedido({
       ...selectedPedido,
@@ -130,7 +137,7 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
         { id_producto: "", cantidad: "", precio_unitario: "", subtotal: 0 }
       ]
     });
-  };
+};
   
   const handleRemoveDetalle = (index) => {
     const detalles = [...selectedPedido.detallesPedido];
@@ -197,7 +204,11 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
     validateRealTime();
   }, [selectedPedido]);
 
-  
+  const hasDuplicateProductos = () => {
+    const productos = selectedPedido.detallesPedido.map(detalle => detalle.id_producto);
+    return new Set(productos).size !== productos.length;
+};
+
   const handleSave = async () => {
     const newErrors = {};
     const today = new Date().toISOString().split("T")[0]; // Obtener la fecha de hoy en formato YYYY-MM-DD
@@ -212,7 +223,10 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
     if (selectedPedido.detallesPedido.length === 0) {
       newErrors.detallesPedido = "Debe agregar al menos un detalle de pedido";
     }
-  
+  if (hasDuplicateProductos()) {
+      newErrors.detallesPedido = "No se pueden agregar productos duplicados.";
+    }
+
     selectedPedido.detallesPedido.forEach((detalle, index) => {
       if (!detalle.id_producto) {
         newErrors[`producto_${index}`] = "El producto es obligatorio";
@@ -361,7 +375,6 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
             )}
           </div>
          
-  
          
           <div className="flex flex-col gap-2 w-1/2">
     <label className="block text-sm font-medium text-gray-700">Fecha de Pago:</label>

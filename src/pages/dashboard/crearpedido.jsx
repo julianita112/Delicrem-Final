@@ -96,29 +96,57 @@ const handleChange = (e) => {
   // Eliminar el validateFields de aquí, ya que ahora lo manejamos con useEffect
 };
 
-  const handleDetalleChange = (index, e) => {
-    const { name, value } = e.target;
-    const detalles = [...selectedPedido.detallesPedido];
+const handleDetalleChange = (index, e) => {
+  const { name, value } = e.target;
+  const detalles = [...selectedPedido.detallesPedido];
 
-    if (name === 'id_producto') {
-      const productoSeleccionado = productos.find(p => p.id_producto === parseInt(value));
-      detalles[index].precio_unitario = productoSeleccionado ? productoSeleccionado.precio : "";
+  if (name === 'id_producto') {
+    const productoSeleccionado = productos.find(p => p.id_producto === parseInt(value));
+
+    // Verificar si el producto ya existe en otro detalle
+    const productoDuplicado = detalles.some((detalle, i) => detalle.id_producto === parseInt(value) && i !== index);
+
+    if (productoDuplicado) {
+        // Mostrar mensaje de SweetAlert2
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Este producto ya ha sido seleccionado.',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+        return; // Detener la ejecución si el producto está duplicado
     }
 
-    detalles[index][name] = value;
+    if (productoSeleccionado) {
+        detalles[index].precio_unitario = productoSeleccionado.precio;
+    } else {
+        console.error("Producto no encontrado:", value);
+    }
 
-    if (name === 'cantidad' || name === 'precio_unitario') {
+      detalles[index].precio_unitario = productoSeleccionado ? productoSeleccionado.precio : "";
+  }
+
+  // Actualizar el valor del campo seleccionado
+  detalles[index][name] = value;
+
+  // Calcular el subtotal si se cambia la cantidad o el precio unitario
+  if (name === 'cantidad' || name === 'precio_unitario') {
       const cantidad = parseInt(detalles[index].cantidad) || 0;
       const precioUnitario = parseFloat(detalles[index].precio_unitario) || 0;
       detalles[index].subtotal = cantidad * precioUnitario;
-    }
+  }
 
-    setSelectedPedido({ ...selectedPedido, detallesPedido: detalles });
-    updateTotal(detalles);
+  // Actualizar el estado con los nuevos detalles
+  setSelectedPedido({ ...selectedPedido, detallesPedido: detalles });
+  updateTotal(detalles);
 
-    // Validate fields
-    validateFields();
-  };
+  // Validar los campos después de hacer un cambio
+  validateFields();
+};
+
 
   const Toast = Swal.mixin({
     toast: true,
@@ -133,11 +161,25 @@ const handleChange = (e) => {
   });
 
   const handleAddDetalle = () => {
+    // Comprobar si ya existe un detalle con el mismo id_producto vacío
+    const productoDuplicado = selectedPedido.detallesPedido.some(detalle => detalle.id_producto === "");
+  
+    if (productoDuplicado) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Producto duplicado',
+        text: 'Ya has agregado un producto sin completar. Por favor, completa o elimina el producto antes de agregar uno nuevo.',
+      });
+      return;
+    }
+  
+    // Agregar un nuevo detalle de producto si no hay duplicados
     setSelectedPedido({
       ...selectedPedido,
       detallesPedido: [...selectedPedido.detallesPedido, { id_producto: "", cantidad: "", precio_unitario: "", subtotal: 0 }]
     });
   };
+  
 
   const handleRemoveDetalle = (index) => {
     const detalles = [...selectedPedido.detallesPedido];
@@ -178,7 +220,17 @@ const handleChange = (e) => {
         }
     });
 
+      // Validación de duplicados
+    const idsProductos = selectedPedido.detallesPedido.map(detalle => detalle.id_producto);
+    const duplicados = idsProductos.filter((item, index) => idsProductos.indexOf(item) !== index);
+
+    if (duplicados.length > 0) {
+        newErrors.duplicados = "Hay productos duplicados en el pedido. Por favor, elimínalos o cámbialos antes de continuar.";
+    }
+
+    // Configurar errores en el estado
     setErrors(newErrors);
+
 
     if (Object.keys(newErrors).length > 0) {
         // Si hay errores, mostrar alerta y no guardar el pedido

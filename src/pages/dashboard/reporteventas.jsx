@@ -27,7 +27,7 @@ export function ReporteVentas() {
         "Estado": estadosDict[venta.id_estado] || "Desconocido",
         "Total": parseFloat(venta.total).toFixed(2),
         
-        "Anulación": venta.anulacion || "N/A",
+        "Anulación": venta.motivo_anulacion || "N/A",
       }));
 
       const worksheet = XLSX.utils.json_to_sheet(datosReporte);
