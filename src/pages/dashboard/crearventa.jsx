@@ -107,7 +107,7 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
 
   const handlePedidoChange = (numero_pedido) => {
     console.log("Número de pedido seleccionado:", numero_pedido);
-    const pedido = pedidos.find(p => p.numero_pedido === numero_pedido);
+    const pedido = pedidos.find(p => String(p.numero_pedido) === numero_pedido);
     if (pedido) {
       console.log("Pedido encontrado:", pedido);
       const detalles = pedido.detallesPedido.map(detalle => ({
@@ -143,9 +143,10 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
     // Validación de fecha de venta
     if (!selectedVenta.fecha_venta) {
       newErrors.fecha_venta = "La fecha de venta es obligatoria";
-    } else if (selectedVenta.fecha_venta !== today) {
+    } else if (new Date(selectedVenta.fecha_venta).toISOString().split('T')[0] !== today) {
       newErrors.fecha_venta = "La fecha de venta debe ser hoy.";
     }
+    
   
     // Validación de fecha de entrega (obligatoria y debe ser a futuro)
     if (!selectedVenta.fecha_entrega) {
@@ -254,14 +255,15 @@ export function CrearVenta({ clientes, productos, fetchVentas, onCancel }) {
               <Select
                 label="Número de Pedido 'Opcional'"
                 name="numero_venta"
-                value={selectedVenta.numero_venta}
+                value={String(selectedVenta.numero_venta)} // Convierte a string
                 onChange={(value) => handlePedidoChange(value)}
                className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-0"
               >
                 {pedidos
                   .filter(pedido => pedido.id_estado === 6) // Filtrar pedidos con estado "pagado"
                   .map(pedido => (
-                    <Option key={pedido.numero_pedido} value={pedido.numero_pedido}>
+                    <Option key={pedido.numero_pedido} value={String(pedido.numero_pedido)}>
+
                       {pedido.numero_pedido}
                     </Option>
                   ))}

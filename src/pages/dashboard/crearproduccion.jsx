@@ -33,6 +33,8 @@ export function CrearProduccion({ open, handleCreateProductionOpen }) {
   const [ventasAsociadas, setVentasAsociadas] = useState([]);
   const [productos, setProductos] = useState({});
   const [totalProductosEnProduccion, setTotalProductosEnProduccion] = useState(0); // Total productos en estado 2
+  const [validationError, setValidationError] = useState(""); // Nuevo estado de validación
+
 
   const LIMITE_PRODUCCION = 2000; // Límite de productos por día
 
@@ -40,6 +42,7 @@ export function CrearProduccion({ open, handleCreateProductionOpen }) {
     if (open) {
       setSelectedVentas([]);
       setProductionDetails({});
+      setValidationError(""); // Reiniciar el error de validación
       fetchVentas();
       fetchPedidos();
       fetchVentasAsociadas();
@@ -153,6 +156,14 @@ export function CrearProduccion({ open, handleCreateProductionOpen }) {
   };
 
   const handleCreateProductionSave = async () => {
+    if (selectedVentas.length === 0) {
+      Toast.fire({
+        icon: "error",
+        title: "Selección requerida",
+        text: "Debes seleccionar al menos una venta para crear la orden de producción.",
+      });
+      return; // No continuar si no hay ventas seleccionadas
+    }
     // Calcular el total de productos de la nueva orden
     const totalProductosNuevaOrden = Object.values(productionDetails).reduce((total, detalle) => total + detalle.cantidad, 0);
 
@@ -189,6 +200,7 @@ export function CrearProduccion({ open, handleCreateProductionOpen }) {
       });
       setSelectedVentas([]);
       setProductionDetails({});
+      setValidationError(""); // Limpiar el mensaje de error
       handleCreateProductionOpen();
     } catch (error) {
       console.error("Error al crear la orden de producción:", error);

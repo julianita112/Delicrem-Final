@@ -87,13 +87,13 @@ export function Ventas() {
     try {
       const response = await axios.patch(`http://localhost:3000/api/ventas/${numero_venta}/entregar`);
       fetchVentas(); // Actualiza la lista de ventas después de entregar
-      Toast.fire({
+      Swal.fire({
         icon: 'success',
         title: 'La venta ha sido entregada correctamente.',
       });
     } catch (error) {
       console.error("Error al entregar la venta:", error.response?.data || error.message);
-      Toast.fire({
+      Swal.fire({
         icon: 'error',
         title: `Hubo un problema al entregar la venta: ${error.response?.data?.error || error.message}`,
       });
@@ -192,7 +192,7 @@ export function Ventas() {
   const handleToggleActivo = async (id_venta) => {
     const venta = ventas.find(v => v.id_venta === id_venta);
     if (!venta) {
-      Toast.fire({
+      Swal.fire({
         icon: 'error',
         title: 'Venta no encontrada.',
       });
@@ -201,7 +201,7 @@ export function Ventas() {
 
     // Solo permitir anular si id_estado no es 1 ni 5
     if (venta.id_estado === 1 || venta.id_estado === 5) {
-      Toast.fire({
+      Swal.fire({
         icon: 'error',
         title: 'Operación no permitida.',
         text: 'No se puede anular una venta en este estado.',
@@ -215,7 +215,7 @@ export function Ventas() {
 
   const handleCancelVenta = async () => {
     if (!motivoAnulacion.trim()) {
-      Toast.fire({
+      Swal.fire({
         icon: 'error',
         title: 'Debe proporcionar un motivo de anulación.',
       });
@@ -228,7 +228,7 @@ export function Ventas() {
         motivo_anulacion: motivoAnulacion 
       });
       fetchVentas();
-      Toast.fire({
+      Swal.fire({
         icon: 'success',
         title: 'La venta ha sido anulada correctamente.',
       });
@@ -236,7 +236,7 @@ export function Ventas() {
       setMotivoAnulacion('');
     } catch (error) {
       console.error("Error al anular la venta:", error.response?.data || error.message);
-      Toast.fire({
+      Swal.fire({
         icon: 'error',
         title: `Hubo un problema al anular la venta: ${error.response?.data?.error || error.message}`,
       });
@@ -511,86 +511,83 @@ export function Ventas() {
       {/* Ejecutar la generación del reporte cuando el estado lo indique */}
       {mostrarReporteVentas && <ReporteVentas />}
     
-    {/* Modal para capturar motivo de anulación */}
-{cancelOpen && (
-  <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70">
-    <div className="bg-white p-6 rounded-xl shadow-2xl max-w-md w-full transition-transform transform scale-100 hover:scale-105">
-      <Typography variant="h5" className="font-semibold mb-4 ">
-        Motivo de Anulación de la Venta
-      </Typography>
-      <textarea
-        placeholder="Escribe el motivo de anulación aquí..."
-        value={motivoAnulacion}
-        onChange={(e) => setMotivoAnulacion(e.target.value)}
-        className={`w-full p-4 border ${motivoAnulacion.length < 5 || motivoAnulacion.length > 30 ? 'border-red-500' : 'border-gray-300'} rounded-lg mb-4 resize-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 outline-none transition duration-200`}
-        rows={4}
-        required
-      />
+      {/* Modal para capturar motivo de anulación */}
+      {cancelOpen && (
+        <Dialog open={true} handler={() => setCancelOpen(false)}
+          className="max-w-xs w-11/12 bg-white rounded-lg shadow-lg" size="xs">
+        
+          <DialogHeader className="bg-gray-100 text-gray-800 p-3 rounded-t-lg border-b border-gray-300">
+            <Typography variant="h6" className="font-semibold">
+              Motivo de Anulación
+            </Typography>
+          </DialogHeader>
       
-      {motivoAnulacion.length < 5 && (
-        <p className="text-red-500 text-sm">El motivo debe tener al menos 5 letras.</p>
+          <DialogBody divider className="p-4 bg-white">
+            <textarea
+              placeholder="Escribe el motivo de anulación aquí..."
+              value={motivoAnulacion}
+              onChange={(e) => setMotivoAnulacion(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg mb-4 resize-none"
+              rows={4}
+            />
+          </DialogBody>
+      
+          <div className="flex justify-end gap-2 p-3 bg-gray-100 rounded-b-lg border-t border-gray-300">
+            <Button
+              variant="text"
+              className="btncancelarm"
+              size="sm"
+              onClick={() => setCancelOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="gradient"
+              className="btnagregarm"
+              size="sm"
+              onClick={handleCancelVenta}
+            >
+              Anular Compra
+            </Button>
+          </div>
+        </Dialog>
       )}
-      {motivoAnulacion.length > 30 && (
-        <p className="text-red-500 text-sm">El motivo no puede tener más de 30 letras.</p>
-      )}
-      <div className="flex justify-end gap-3 mt-4">
-        <Button
-          variant="text"
-          className="btncancelarm text-white"
-          size="sm"
-          onClick={() => setCancelOpen(false)}
-        >
-          Cancelar
-        </Button>
-        <Button
-          variant="gradient"
-          className="btnagregarm bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition duration-200"
-          size="sm"
-          disabled={motivoAnulacion.length < 5 || motivoAnulacion.length > 30} // Deshabilitar el botón si no cumple la validación
-          onClick={handleCancelVenta}
-        >
-          Anular Venta
-        </Button>
-      </div>
-    </div>
-  </div>
-)}
-
+    
       {/* Modal de Detalles de la Venta */}
-      <Dialog open={detailsOpen} handler={() => setDetailsOpen(false)} className=" rounded-3xl max-w-3xl mx-auto p-6 bg-white shadow-lg">
-        <DialogHeader className="text-2x1 font-semibold text-black border-b border-gray-300">
+      <Dialog open={detailsOpen} handler={() => setDetailsOpen(false)} className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+        <DialogHeader className="text-lg font-semibold text-gray-800 border-b border-gray-300">
           Detalles de la Venta
         </DialogHeader>
         <DialogBody divider className="overflow-y-auto max-h-[60vh] p-4">
           {selectedVenta.cliente && (
             <div className="mb-6">
-              <Typography variant="h6" color="black" className="font-semibold mb-2">
+              <Typography variant="h6" color="blue-gray" className="font-semibold mb-2">
                 Información del Cliente
               </Typography>
               <table className="w-full text-sm border-collapse">
                 <tbody>
                   <tr className="border-b">
-                    <td className="font-semibold text-black py-2 px-4">ID Cliente:</td>
+                    <td className="font-medium text-gray-700 py-2 px-4">ID Cliente:</td>
                     <td className="py-2 px-4">{selectedVenta.cliente.id_cliente}</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="font-semibold text-black py-2 px-4">Nombre:</td>
+                    <td className="font-medium text-gray-700 py-2 px-4">Nombre:</td>
                     <td className="py-2 px-4">{selectedVenta.cliente.nombre}</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="font-semibold text-black py-2 px-4">Contacto:</td>
+                    <td className="font-medium text-gray-700 py-2 px-4">Contacto:</td>
                     <td className="py-2 px-4">{selectedVenta.cliente.contacto}</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="font-semibold text-black py-2 px-4">Email:</td>
+                    <td className="font-medium text-gray-700 py-2 px-4">Email:</td>
                     <td className="py-2 px-4">{selectedVenta.cliente.email}</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="font-semibold text-black py-2 px-4">Tipo de Documento:</td>
+                    <td className="font-medium text-gray-700 py-2 px-4">Tipo de Documento:</td>
                     <td className="py-2 px-4">{selectedVenta.cliente.tipo_documento}</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="font-semibold text-black py-2 px-4">Número de Documento:</td>
+                    <td className="font-medium text-gray-700 py-2 px-4">Número de Documento:</td>
                     <td className="py-2 px-4">{selectedVenta.cliente.numero_documento}</td>
                   </tr>
                 </tbody>
@@ -598,39 +595,39 @@ export function Ventas() {
             </div>
           )}
           <div className="mb-6">
-            <Typography variant="h6" color="black" className="font-semibold mb-2">
+            <Typography variant="h6" color="blue-gray" className="font-semibold mb-2">
               Detalles de la Venta
             </Typography>
             <table className="w-full text-sm border-collapse">
               <tbody>
                 <tr className="border-b">
-                  <td className="font-semibold text-black py-2 px-4">ID Venta:</td>
+                  <td className="font-medium text-gray-700 py-2 px-4">ID Venta:</td>
                   <td className="py-2 px-4">{selectedVenta.id_venta}</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="font-semibold text-black py-2 px-4">Número de Venta:</td>
+                  <td className="font-medium text-gray-700 py-2 px-4">Número de Venta:</td>
                   <td className="py-2 px-4">{selectedVenta.numero_venta}</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="font-semibold text-black py-2 px-4">Fecha de Venta:</td>
+                  <td className="font-medium text-gray-700 py-2 px-4">Fecha de Venta:</td>
                   <td className="py-2 px-4">{selectedVenta.fecha_venta.split('T')[0]}</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="font-semibold text-black py-2 px-4">Fecha de Entrega:</td>
+                  <td className="font-medium text-gray-700 py-2 px-4">Fecha de Entrega:</td>
                   <td className="py-2 px-4">{selectedVenta.fecha_entrega.split('T')[0]}</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="font-semibold text-black py-2 px-4">Estado:</td>
+                  <td className="font-medium text-gray-700 py-2 px-4">Estado:</td>
                   <td className="py-2 px-4">
                     {estados.find(estado => estado.id_estado === selectedVenta.id_estado)?.nombre_estado || selectedVenta.id_estado}
                   </td>
                 </tr>
                 <tr className="border-b">
-                  <td className="font-semibold text-black  py-2 px-4">Total:</td>
-                  <td className="py-2 px-4  text-black ">${selectedVenta.total.toFixed(2)}</td>
+                  <td className="font-medium text-gray-700 py-2 px-4">Total:</td>
+                  <td className="py-2 px-4">${selectedVenta.total.toFixed(2)}</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="font-semibold text-black py-2 px-4">Motivo de Anulación:</td>
+                  <td className="font-medium text-gray-700 py-2 px-4">Motivo de Anulación:</td>
                   <td className="py-2 px-4">{selectedVenta.motivo_anulacion || "N/A"}</td>
                 </tr>
               </tbody>
@@ -638,27 +635,27 @@ export function Ventas() {
           </div>
           {/* Detalles de productos */}
           <div className="mb-6 overflow-x-auto">
-            <Typography variant="h6" color="black" className="font-semibold mb-2">
+            <Typography variant="h6" color="blue-gray" className="font-semibold mb-2">
               Detalles de Productos
             </Typography>
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="bg-gray-100 border-b">
-                  <th className="font-medium text-black py-2 px-4">ID Detalle</th>
-                  <th className="font-medium text-black py-2 px-4">Producto</th>
-                  <th className="font-medium text-black py-2 px-4">Cantidad</th>
-                  <th className="font-medium text-black py-2 px-4">Precio Unitario</th>
+                  <th className="font-medium text-gray-700 py-2 px-4">ID Detalle</th>
+                  <th className="font-medium text-gray-700 py-2 px-4">Producto</th>
+                  <th className="font-medium text-gray-700 py-2 px-4">Cantidad</th>
+                  <th className="font-medium text-gray-700 py-2 px-4">Precio Unitario</th>
                 </tr>
               </thead>
               <tbody>
                 {selectedVenta.detalleVentas.map((detalle) => (
                   <tr key={detalle.id_detalle_venta} className="border-b">
-                    <td className="font-semibold text-center text-black py-2 px-4">{detalle.id_detalle_venta}</td>
-                    <td className="text-center py-2 px-4">
+                    <td className="py-2 px-4">{detalle.id_detalle_venta}</td>
+                    <td className="py-2 px-4">
                       {productos.find(p => p.id_producto === detalle.id_producto)?.nombre || 'Producto no encontrado'}
                     </td>
-                    <td className=" text-center py-2 px-4">{detalle.cantidad}</td>
-                    <td className="text-center py-2 px-4">${parseFloat(detalle.precio_unitario).toFixed(2)}</td>
+                    <td className="py-2 px-4">{detalle.cantidad}</td>
+                    <td className="py-2 px-4">${parseFloat(detalle.precio_unitario).toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>

@@ -79,6 +79,16 @@ const allRoutes = [
         path: "/roles",
         element: <Roles />,
       },
+     
+    ],
+  },
+  
+  {
+    title: "Usuarios",
+    layout: "dashboard",
+    visible: true,
+    pages: [
+ 
       {
         icon: <UserGroupIcon {...icon} />,
         name: "Usuarios",
@@ -87,7 +97,7 @@ const allRoutes = [
       },
     ],
   },
-  
+
   {
     title: "Compras",
     layout: "dashboard",
@@ -113,12 +123,7 @@ const allRoutes = [
         element: <Insumos />,
       },
 
-      {
-        icon: <ClipboardDocumentListIcon {...icon} />,
-        name: "Ficha técnica",
-        path: "/fichatecnica",
-        element: <FichasTecnicas />,
-      },
+     
       {
         icon: <ShoppingCartIcon {...icon} />,
         name: "Gestión de Compras",
@@ -138,6 +143,12 @@ const allRoutes = [
         name: "Productos",
         path: "/productoterminado",
         element: <ProductoTerminado />,
+      },
+      {
+        icon: <ClipboardDocumentListIcon {...icon} />,
+        name: "Ficha técnica",
+        path: "/fichatecnica",
+        element: <FichasTecnicas />,
       },
       {
         icon: <InboxStackIcon {...icon} />,
