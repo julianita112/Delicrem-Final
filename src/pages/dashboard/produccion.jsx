@@ -513,7 +513,7 @@ export function OrdenesProduccion() {
 
       {/* Modal de detalles */}
       <Dialog open={detailsOpen} handler={handleDetailsOpen} className="max-w-xs w-11/12 bg-white rounded-lg shadow-lg" size="xs">
-        <DialogHeader className="text-xl font-bold text-gray-800">
+        <DialogHeader className="text-xl font-bold  text-blue-gray-900">
           Detalles de la Orden de Producción
         </DialogHeader>
         <DialogBody className="space-y-2">

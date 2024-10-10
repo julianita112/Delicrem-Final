@@ -236,7 +236,7 @@ const validateField = (name, value) => {
   };    
   
   return (
-    <div className="rounded-3xl flex flex-col gap-6 p-6 bg-gray-50 text-black shadow-lg">
+    <div className="rounded-3xl flex flex-col gap-6 p-6 bg-gray-50  text-blue-gray-900 shadow-lg">
       <div
         style={{
           fontSize: '1.5rem',
@@ -252,7 +252,7 @@ const validateField = (name, value) => {
   <div className="flex flex-col gap-4 w-full p-4 bg-white rounded-lg shadow-sm">
   <div className="flex gap-4">
   <div className="flex flex-col gap-2 w-1/2">
-    <label className="block text-sm font-medium text-black">Cargar Ficha Técnica Existente 'Opcional':</label>
+    <label className="block text-sm font-medium  text-blue-gray-900">Cargar Ficha Técnica Existente 'Opcional':</label>
     <select
       className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-0"
       onChange={handleFichaChange}
@@ -268,7 +268,7 @@ const validateField = (name, value) => {
   </div>
 
   <div className="flex flex-col gap-2 w-1/2">
-    <label className="block text-sm font-medium text-black">Producto:</label>
+    <label className="block text-sm font-medium  text-blue-gray-900">Producto:</label>
     <select
       className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-0"
       name="id_producto"
@@ -289,7 +289,7 @@ const validateField = (name, value) => {
 
 <div className="flex gap-4">
 <div className="flex flex-col gap-2 w-1/2">
-      <label className="block text-sm font-medium text-black">Descripción de la ficha técnica:</label>
+      <label className="block text-sm font-medium  text-blue-gray-900">Descripción de la ficha técnica:</label>
       <Textarea
         name="descripcion"
         required
@@ -301,7 +301,7 @@ const validateField = (name, value) => {
       {errors.descripcion && <p className="text-red-500 text-xs mt-1">{errors.descripcion}</p>}
     </div>
     <div className="flex flex-col gap-2 w-1/2">
-      <label className="block text-sm font-medium text-black">Descripción detallada de los insumos:</label>
+      <label className="block text-sm font-medium  text-blue-gray-900">Descripción detallada de los insumos:</label>
       <Textarea
         name="insumos"
         required
@@ -323,9 +323,9 @@ const validateField = (name, value) => {
     <table className="min-w-full table-auto border-collapse">
       <thead>
         <tr className="bg-gray-100">
-          <th className="px-40 py-2 text-left text-sm font-medium text-black border-b">Insumo</th>
-          <th className="px-6 py-2 text-left text-sm font-medium text-black border-b">Cantidad</th>
-          <th className="px-4 py-2 text-left text-sm font-medium text-black border-b">Acciones</th>
+          <th className="px-40 py-2 text-left text-sm font-medium  text-blue-gray-900 border-b">Insumo</th>
+          <th className="px-6 py-2 text-left text-sm font-medium  text-blue-gray-900 border-b">Cantidad</th>
+          <th className="px-4 py-2 text-left text-sm font-medium  text-blue-gray-900border-b">Acciones</th>
         </tr>
       </thead>
       <tbody className="divide-y divide-gray-200">

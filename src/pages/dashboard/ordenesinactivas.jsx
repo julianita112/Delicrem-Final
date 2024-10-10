@@ -109,7 +109,7 @@ export function OrdenesInactivas({handleBackToMain}) {
           Volver a Órdenes de Producción
         </Button>
         <Typography variant="h5" color="blue-gray" className="mb-4">
-          Lista de Órdenes Anuladas
+          Historial de Órdenes Anuladas
         </Typography>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -191,7 +191,7 @@ export function OrdenesInactivas({handleBackToMain}) {
       </CardBody>
 
       <Dialog open={detailsOpen} handler={handleDetailsOpen} className="max-w-xs w-11/12 bg-white rounded-lg shadow-lg" size="xs">
-        <DialogHeader className="text-xl font-bold text-black">
+        <DialogHeader className="text-xl font-bold  text-blue-gray-900">
           Detalles de la Orden de Producción Anulada
         </DialogHeader>
         <DialogBody className="space-y-2">

@@ -222,7 +222,7 @@ const fetchExistingInsumos = async () => {
         <div className="flex flex-col gap-4 w-full p-4 bg-white rounded-lg shadow-sm">
           <div className="flex gap-4">
           <div className="flex flex-col gap-2 w-1/2">
-            <label className="block text-sm font-medium text-black">Producto:</label>
+            <label className="block text-sm font-medium  text-blue-gray-900">Producto:</label>
             <select
   className="w-full p-2 border border-blue-gray rounded-lg text-sm focus:border-blue-500 focus:ring-0 bg-blue-gray-50 cursor-not-allowed"
   name="id_producto"
@@ -242,7 +242,7 @@ const fetchExistingInsumos = async () => {
           </div>
       <div className="flex gap-4">    
     <div className="flex flex-col gap-2 w-1/2">
-            <label className="block text-sm font-medium text-black">Descripción de la ficha técnica:</label>
+            <label className="block text-sm font-medium  text-blue-gray-900">Descripción de la ficha técnica:</label>
             <Textarea
               name="descripcion"
               required
@@ -256,7 +256,7 @@ const fetchExistingInsumos = async () => {
           </div>
           
           <div className="flex flex-col gap-2 w-1/2">
-          <label className="block text-sm font-medium text-black">Descripción detallada de los insumos:</label>
+          <label className="block text-sm font-medium  text-blue-gray-900">Descripción detallada de los insumos:</label>
             <Textarea
               name="insumos"
               required
@@ -278,9 +278,9 @@ const fetchExistingInsumos = async () => {
     <table className="min-w-full table-auto border-collapse">
       <thead>
         <tr className="bg-gray-100">
-          <th className="px-40 py-2 text-left text-sm font-medium text-black border-b">Insumo</th>
-          <th className="px-6 py-2 text-left text-sm font-medium text-black border-b">Cantidad</th>
-          <th className="px-4 py-2 text-left text-sm font-medium text-black border-b">Acciones</th>
+          <th className="px-40 py-2 text-left text-sm font-medium  text-blue-gray-900 border-b">Insumo</th>
+          <th className="px-6 py-2 text-left text-sm font-medium  text-blue-gray-900 border-b">Cantidad</th>
+          <th className="px-4 py-2 text-left text-sm font-medium  text-blue-gray-900 border-b">Acciones</th>
         </tr>
       </thead>
       <tbody className="divide-y divide-gray-200">

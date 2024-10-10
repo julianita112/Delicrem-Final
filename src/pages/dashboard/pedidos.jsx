@@ -434,12 +434,12 @@ export function Pedidos() {
 
 const DetallesPedido = ({ pedido, productos, estados, onClose }) => (
   <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
-    <Typography className="text-black p-2 text-xl mb-4 font-semibold">Detalles del Pedido</Typography>
+    <Typography className=" text-blue-gray-900 p-2 text-xl mb-4 font-semibold">Detalles del Pedido</Typography>
 
     {/* Información del Cliente */}
     {pedido.clientesh && (
       <div className="mb-6">
-        <Typography className="text-black font-semibold p-2 text-lg mb-2">Información del Cliente</Typography>
+        <Typography className=" text-blue-gray-900 font-semibold p-2 text-lg mb-2">Información del Cliente</Typography>
         <table className="min-w-full">
           <tbody>
             <tr>
@@ -473,7 +473,7 @@ const DetallesPedido = ({ pedido, productos, estados, onClose }) => (
 
     {/* Información del Pedido */}
     <div className="mb-6">
-      <Typography className="text-black font-semibold p-2 text-lg mb-4 ">Información del Pedido</Typography>
+      <Typography className=" text-blue-gray-900 font-semibold p-2 text-lg mb-4 ">Información del Pedido</Typography>
       <table className="min-w-full">
         <tbody>
           <tr>
@@ -504,12 +504,12 @@ const DetallesPedido = ({ pedido, productos, estados, onClose }) => (
 
     {/* Detalles de Productos */}
     <div className="mb-6">
-  <Typography className="text-black font-semibold p-2 text-lg mb-2">Detalles de Productos</Typography>
+  <Typography className=" text-blue-gray-900 font-semibold p-2 text-lg mb-2">Detalles de Productos</Typography>
   <table className="min-w-full">
     <thead>
       <tr>
-        <th className="text-black font-semibold text-center">Producto</th>
-        <th className="text-black font-semibold text-center">Cantidad</th>
+        <th className=" text-blue-gray-900 font-semibold text-center">Producto</th>
+        <th className=" text-blue-gray-900 font-semibold text-center">Cantidad</th>
       </tr>
     </thead>
     <tbody>

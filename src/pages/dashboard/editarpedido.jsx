@@ -384,7 +384,8 @@ export function EditarPedido({ pedido, clientes = [], productos = [], fetchPedid
         value={selectedPedido.fecha_pago || ""}
         onChange={handleChange}
         className="w-full text-xs"
-        disabled={selectedPedido.id_estado !== 6}  // Deshabilitar si el estado no es 'Pagado'
+        disabled
+       // Deshabilitar si el estado no es 'Pagado'
     />
     {errors.fecha_pago && (
         <p className="text-red-500 text-xs mt-1">{errors.fecha_pago}</p>

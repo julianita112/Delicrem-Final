@@ -463,7 +463,7 @@ export function ProductoTerminado() {
       className="max-w-md w-10/12 p-6 bg-white rounded-3xl shadow-xl"
   size="xs"
        >
-       <DialogHeader className="text-2xl font-semibold text-black">
+       <DialogHeader className="text-2xl font-semibold  text-blue-gray-900">
           {editMode ? "Editar Producto Terminado" : "Crear Producto"}
         </DialogHeader>
         <DialogBody divider className="space-y-4">
@@ -544,33 +544,33 @@ export function ProductoTerminado() {
         fetchProductosActivos={fetchProductosActivos}
       />
 
-      <Dialog open={detailsOpen} handler={handleDetailsOpen}>
-        <DialogHeader>Detalles del Producto</DialogHeader>
+      <Dialog open={detailsOpen} handler={handleDetailsOpen}className="max-w-xs w-11/12 bg-white rounded-lg shadow-lg" size="xs">
+        <DialogHeader className="font-bold text-gray-900">Detalles del Producto</DialogHeader>
         <DialogBody divider>
           <table className="min-w-full">
             <tbody>
               <tr>
-                <td className="font-semibold">Nombre:</td>
+                <td className=" text-blue-gray-900 font-semibold">Nombre:</td>
                 <td>{selectedProducto.nombre}</td>
               </tr>
               <tr>
-                <td className="font-semibold">Descripción:</td>
+                <td className="  text-blue-gray-900 font-semibold">Descripción:</td>
                 <td>{selectedProducto.descripcion}</td>
               </tr>
               <tr>
-                <td className="font-semibold">Precio:</td>
+                <td className=" text-blue-gray-900 font-semibold">Precio:</td>
                 <td>{selectedProducto.precio}</td>
               </tr>
               <tr>
-                <td className="font-semibold">Stock:</td>
+                <td className="  text-blue-gray-900 font-semibold">Stock:</td>
                 <td>{selectedProducto.stock}</td>
               </tr>
               <tr>
-                <td className="font-semibold">Creado:</td>
+                <td className=" text-blue-gray-900 font-semibold">Creado:</td>
                 <td>{selectedProducto.createdAt ? new Date(selectedProducto.createdAt).toLocaleString() : "N/A"}</td>
               </tr>
               <tr>
-                <td className="font-semibold">Actualizado:</td>
+                <td className=" text-blue-gray-900 font-semibold">Actualizado:</td>
                 <td>{new Date(selectedProducto.updatedAt).toLocaleString()}</td>
               </tr>
             </tbody>

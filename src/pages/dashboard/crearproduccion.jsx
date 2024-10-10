@@ -251,7 +251,7 @@ export function CrearProduccion({ open, handleCreateProductionOpen }) {
             checked={selectedVentas.includes(venta.numero_venta)}
           />
         </div>
-        <span className="ml-4 text-black" style={{ fontWeight: 'bold' }}>
+        <span className="ml-4  text-blue-gray-900" style={{ fontWeight: 'bold' }}>
           Fecha de Entrega: {new Date(venta.fecha_entrega).toISOString().split('T')[0]}
         </span>
       </div>

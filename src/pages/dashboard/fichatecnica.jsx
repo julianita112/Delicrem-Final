@@ -374,50 +374,50 @@ export function FichasTecnicas() {
      
       {/* Diálogo para ver detalles con estilo de versión anterior */}
       <Dialog open={detailsOpen} handler={() => setDetailsOpen(!detailsOpen)} className="overflow-auto max-h-[90vh]">
-  <DialogHeader className="text-black p-4 border-b border-gray-200">
-    <Typography variant="h5" className="font-semibold">Detalles de la Ficha Técnica</Typography>
+  <DialogHeader className=" text-blue-gray-900 p-4 border-b border-gray-200">
+    <Typography variant="h4" className="font-semibold">Detalles de la Ficha Técnica</Typography>
   </DialogHeader>
   <DialogBody divider className="overflow-auto max-h-[60vh] p-4">
     <div className="mb-4">
-      <Typography variant="h6" color="blue-gray" className="font-semibold mb-2">
+      <Typography variant="h6" color="black" className="font-semibold mb-2">
         Información de la Ficha Técnica
       </Typography>
       <table className="min-w-full border-separate border-spacing-4">
         <tbody>
           <tr>
-            <td className="font-medium text-gray-700">Producto:</td>
-            <td className="text-gray-900">{productos.find(producto => producto.id_producto === selectedFicha.id_producto)?.nombre || 'Desconocido'}</td>
+            <td className="font-medium  text-blue-gray-900">Producto:</td>
+            <td className=" text-blue-gray-900">{productos.find(producto => producto.id_producto === selectedFicha.id_producto)?.nombre || 'Desconocido'}</td>
           </tr>
           <tr>
-            <td className="font-medium text-gray-700">Descripción:</td>
-            <td className="text-gray-900">{selectedFicha.descripcion}</td>
+            <td className="font-medium  text-blue-gray-900">Descripción:</td>
+            <td className=" text-blue-gray-900k">{selectedFicha.descripcion}</td>
           </tr>
           <tr>
-            <td className="font-medium text-gray-700">Descripción detallada de Insumos:</td>
-            <td className="text-gray-900">{selectedFicha.insumos}</td>
+            <td className="font-medium  text-blue-gray-900">Descripción detallada de Insumos:</td>
+            <td className=" text-blue-gray-900">{selectedFicha.insumos}</td>
           </tr>
           <tr>
-            <td className="font-medium text-gray-700">Creado:</td>
-            <td className="text-gray-900">{new Date(selectedFicha.createdAt).toLocaleString()}</td>
+            <td className="font-medium  text-blue-gray-900">Creado:</td>
+            <td className=" text-blue-gray-900">{new Date(selectedFicha.createdAt).toLocaleString()}</td>
           </tr>
           <tr>
-            <td className="font-medium text-gray-700">Actualizado:</td>
-            <td className="text-gray-900">{new Date(selectedFicha.updatedAt).toLocaleString()}</td>
+            <td className="font-medium  text-blue-gray-900">Actualizado:</td>
+            <td className=" text-blue-gray-900">{new Date(selectedFicha.updatedAt).toLocaleString()}</td>
           </tr>
         </tbody>
       </table>
     </div>
     
     <div className="mt-6 text-center">
-      <Typography variant="h6" color="blue-gray" className="font-semibold mb-4">
+      <Typography variant="h5" color="black" className="font-semibold mb-4">
         Detalles de Insumos
       </Typography>
       <div className="inline-block min-w-full">
         <table className="min-w-full mx-auto border-collapse">
           <thead>
             <tr className="bg-gray-200">
-              <th className="px-6 py-2 text-center font-semibold text-gray-700">Insumo</th>
-              <th className="px-6 py-2 text-center font-semibold text-gray-700">Cantidad</th>
+              <th className="px-6 py-2 text-center font-semibold  text-blue-gray-900">Insumo</th>
+              <th className="px-6 py-2 text-center font-semibold  text-blue-gray-900">Cantidad</th>
             </tr>
           </thead>
           <tbody>

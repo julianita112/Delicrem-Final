@@ -23,7 +23,6 @@ export function Sidenav({ brandImg, brandName }) {
     white: "bg-white shadow-sm",
     transparent: "bg-transparent",
   };
-
   return (
     <aside
       className={`${sidenavTypes[sidenavType]} ${
@@ -54,13 +53,12 @@ export function Sidenav({ brandImg, brandName }) {
                   </Typography>
                 </li>
               )}
+              
               {pages.map(({ icon, name, path }) => (
                 <li key={name}>
                   <NavLink to={`/${layout}${path}`}>
                     {({ isActive }) => (
-                      <Button
-                        variant={isActive ? "gradient" : "text"}
-                        color={
+                      <Button variant={isActive ? "gradient" : "text"} color={
                           isActive
                             ? sidenavColor
                             : sidenavType === "dark"
@@ -90,8 +88,7 @@ export function Sidenav({ brandImg, brandName }) {
           ))}
       </div>
       <div className="m-4">
-        <Button
-          variant="text"
+        <Button variant="text"
           color={sidenavType === "dark" ? "white" : "blue-gray"}
           className="flex items-center gap-4 px-4 capitalize transition-all duration-300 ease-in-out transform hover:scale-100"
           fullWidth

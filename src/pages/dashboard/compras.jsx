@@ -224,14 +224,14 @@ export function Compras() {
 
                 <Button 
                   onClick={handleGenerarReporte}  
-                  className="bg-gray-200 text-black hover:bg-gray-300 transition rounded px-4 py-2 normal-case"
+                  className="bg-gray-200  text-blue-gray-900 hover:bg-gray-300 transition rounded px-4 py-2 normal-case"
                  
                 >
                   Reporte
                 </Button>
                 <Button 
                   onClick={handleGenerarInforme} 
-                  className="bg-gray-200 text-black hover:bg-gray-300 transition rounded px-4 py-2 normal-case"
+                  className="bg-gray-200  text-blue-gray-900 hover:bg-gray-300 transition rounded px-4 py-2 normal-case"
                   size="sm"
                 >
                   Informe
@@ -332,12 +332,12 @@ export function Compras() {
 
       {/* Modal para ver detalles de la compra */}
       <Dialog open={showDetails} handler={handleCloseDetails} className="overflow-auto max-h-[90vh] rounded-lg shadow-lg border border-gray-200">
-        <DialogHeader className="text-black p-4 border-b border-gray-200">
+        <DialogHeader className=" text-blue-gray-900 p-4 border-b border-gray-200">
           <Typography variant="h4" className="font-semibold">Detalles de la Compra</Typography>
         </DialogHeader>
         <DialogBody divider className="overflow-auto max-h-[60vh] p-4 bg-white">
           <div className="mb-4">
-            <Typography variant="h5" color="blue-gray" className="font-semibold mb-2">
+            <Typography variant="h6" color="blue-gray" className="font-semibold mb-2">
               Número de Recibo:
               <div className="text-gray-900 mt-1">
                 {selectedCompra.numero_recibo || "N/A"}
@@ -346,7 +346,7 @@ export function Compras() {
           </div>
           {selectedCompra.proveedorCompra && (
             <div className="mb-4">
-              <Typography variant="h5" color="blue-gray" className="font-semibold mb-2">
+              <Typography variant="h6" color="blue-gray" className="font-semibold mb-2">
                 Información del Proveedor
               </Typography>
               <table className="min-w-full border-separate border-spacing-4 border-gray-300">
@@ -383,10 +383,10 @@ export function Compras() {
               <tbody>
                 {(selectedCompra.detalleCompras || []).map((detalle) => (
                   <tr key={detalle.id_detalle_compra} className="border-t border-gray-300 hover:bg-gray-50">
-                    <td className="px-6 py-2 text-gray-900">{detalle.id_detalle_compra}</td>
-                    <td className="px-6 py-2 text-gray-900">{insumos.find(ins => ins.id_insumo === detalle.id_insumo)?.nombre || "Desconocido"}</td>
-                    <td className="px-6 py-2 text-gray-900">{detalle.cantidad}</td>
-                    <td className="px-6 py-2 text-gray-900">{Number(detalle.precio_unitario).toFixed(2)}</td>
+                    <td className="px-6 py-2 text-gray-900 text-center">{detalle.id_detalle_compra}</td>
+                    <td className="px-6 py-2 text-gray-900 text-center">{insumos.find(ins => ins.id_insumo === detalle.id_insumo)?.nombre || "Desconocido"}</td>
+                    <td className="px-6 py-2 text-gray-900 text-center">{detalle.cantidad}</td>
+                    <td className="px-6 py-2 text-gray-900 text-center">{Number(detalle.precio_unitario).toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -395,7 +395,7 @@ export function Compras() {
               <Typography variant="h6" color="blue-gray" className="font-semibold">
                 Motivo Anulación: {selectedCompra.motivo_anulacion || "N/A"}
               </Typography>
-              <Typography variant="h6" color="blue-gray" className="font-semibold">
+              <Typography variant="h5" color="blue-gray" className="font-semibold">
                 Total: ${parseFloat(selectedCompra.total).toFixed(2)}
               </Typography>
             </div>

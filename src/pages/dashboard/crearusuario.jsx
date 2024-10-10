@@ -278,7 +278,7 @@ const debounceValidate = debounce(async (user) => {
       handler={handleOpen}
       className="custom-modal bg-white rounded-3xl shadow-lg max-w-3xl mx-auto"
     >
-      <DialogHeader className="bg-white text-black border-b border-gray-200 font-semibold p-4 rounded-t-lg">
+      <DialogHeader className="bg-white  text-blue-gray-900 border-b border-gray-200 font-semibold p-4 rounded-t-lg">
         {editMode ? "Editar Usuario" : "Crear Usuario"}
       </DialogHeader>
       <DialogBody className="p-4 space-y-1 max-h-80 overflow-y-auto">

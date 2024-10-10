@@ -128,7 +128,7 @@ export function SignIn() {
       <div className="flex flex-col lg:flex-row w-full max-w-4xl mx-auto">
         <div className="lg:w-1/2 p-6 bg-white rounded-lg shadow-lg">
           <div className="text-center mb-4 mt-16">
-            <Typography variant="h3" className="text-black font-semibold mb-6">Iniciar Sesión</Typography>
+            <Typography variant="h3" className=" text-blue-gray-900 font-semibold mb-6">Iniciar Sesión</Typography>
             <Typography variant="h6" className="text-gray-600 mt-4">
               Ingrese su correo electrónico y contraseña para iniciar sesión.
             </Typography>

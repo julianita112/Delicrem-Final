@@ -344,14 +344,14 @@ export function Ventas() {
             <div className="flex items-center gap-4">
               <Button
                 onClick={handleGenerarReporte}
-                className="bg-gray-200 text-black hover:bg-gray-300 transition rounded px-4 py-2 normal-case"
+                className="bg-gray-200  text-blue-gray-900 hover:bg-gray-300 transition rounded px-4 py-2 normal-case"
                 size="sm"
               >
                 Reporte
               </Button>
               <Button
                 onClick={() => setMostrarInforme(true)}
-                className="bg-gray-200 text-black hover:bg-gray-300 transition rounded px-4 py-2 normal-case"
+                className="bg-gray-200  text-blue-gray-900 hover:bg-gray-300 transition rounded px-4 py-2 normal-case"
                 size="sm"
               >
                 Informe
@@ -555,13 +555,13 @@ export function Ventas() {
     
       {/* Modal de Detalles de la Venta */}
       <Dialog open={detailsOpen} handler={() => setDetailsOpen(false)} className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-        <DialogHeader className="text-lg font-semibold text-gray-800 border-b border-gray-300">
+        <DialogHeader className="text-2x1 font-semibold  text-blue-gray-900 border-b border-gray-300">
           Detalles de la Venta
         </DialogHeader>
         <DialogBody divider className="overflow-y-auto max-h-[60vh] p-4">
           {selectedVenta.cliente && (
             <div className="mb-6">
-              <Typography variant="h6" color="blue-gray" className="font-semibold mb-2">
+              <Typography variant="h6" color="black" className="font-semibold mb-2">
                 Información del Cliente
               </Typography>
               <table className="w-full text-sm border-collapse">
@@ -595,7 +595,7 @@ export function Ventas() {
             </div>
           )}
           <div className="mb-6">
-            <Typography variant="h6" color="blue-gray" className="font-semibold mb-2">
+            <Typography variant="h6" color="black" className="font-semibold mb-2">
               Detalles de la Venta
             </Typography>
             <table className="w-full text-sm border-collapse">
@@ -623,7 +623,7 @@ export function Ventas() {
                   </td>
                 </tr>
                 <tr className="border-b">
-                  <td className="font-medium text-gray-700 py-2 px-4">Total:</td>
+                  <td className="font-medium text-gray-900 py-2 px-4">Total:</td>
                   <td className="py-2 px-4">${selectedVenta.total.toFixed(2)}</td>
                 </tr>
                 <tr className="border-b">
@@ -635,27 +635,27 @@ export function Ventas() {
           </div>
           {/* Detalles de productos */}
           <div className="mb-6 overflow-x-auto">
-            <Typography variant="h6" color="blue-gray" className="font-semibold mb-2">
+            <Typography variant="h6" color="black" className="font-semibold mb-2">
               Detalles de Productos
             </Typography>
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="bg-gray-100 border-b">
-                  <th className="font-medium text-gray-700 py-2 px-4">ID Detalle</th>
-                  <th className="font-medium text-gray-700 py-2 px-4">Producto</th>
-                  <th className="font-medium text-gray-700 py-2 px-4">Cantidad</th>
-                  <th className="font-medium text-gray-700 py-2 px-4">Precio Unitario</th>
+                  <th className="font-medium text-gray-900 py-2 px-4">ID Detalle</th>
+                  <th className="font-medium text-gray-900 py-2 px-4">Producto</th>
+                  <th className="font-medium text-gray-900 py-2 px-4">Cantidad</th>
+                  <th className="font-medium text-gray-900 py-2 px-4">Precio Unitario</th>
                 </tr>
               </thead>
               <tbody>
                 {selectedVenta.detalleVentas.map((detalle) => (
                   <tr key={detalle.id_detalle_venta} className="border-b">
-                    <td className="py-2 px-4">{detalle.id_detalle_venta}</td>
-                    <td className="py-2 px-4">
+                    <td className="py-2 px-4 text-center  text-blue-gray-900">{detalle.id_detalle_venta}</td>
+                    <td className="py-2 px-4 text-center">
                       {productos.find(p => p.id_producto === detalle.id_producto)?.nombre || 'Producto no encontrado'}
                     </td>
-                    <td className="py-2 px-4">{detalle.cantidad}</td>
-                    <td className="py-2 px-4">${parseFloat(detalle.precio_unitario).toFixed(2)}</td>
+                    <td className="py-2 px-4 text-center">{detalle.cantidad}</td>
+                    <td className="py-2 px-4 text-center">${parseFloat(detalle.precio_unitario).toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>

@@ -68,7 +68,7 @@ export function ResetPassword() {
         <Card className="p-12 shadow-xl rounded-lg bg-white">
           <div className="text-center mb-6">
            
-            <Typography variant="h3" className="text-black font-bold mb-4">
+            <Typography variant="h3" className=" text-blue-gray-900 font-bold mb-4">
               {step === 1 ? "Recuperar Contraseña" : "Restablecer Contraseña"}
             </Typography>
             <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">

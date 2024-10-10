@@ -46,7 +46,7 @@ export function SignUp() {
                 I agree the&nbsp;
                 <a
                   href="#"
-                  className="font-normal text-black transition-colors hover:text-gray-900 underline"
+                  className="font-normal  text-blue-gray-900 transition-colors hover:text-gray-900 underline"
                 >
                   Terms and Conditions
                 </a>

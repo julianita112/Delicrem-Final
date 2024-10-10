@@ -323,7 +323,7 @@ export function CrearCompra({ handleClose, fetchCompras, proveedores, insumos })
             {errors.id_proveedor && <p className="text-red-500 text-xs mt-1">{errors.id_proveedor}</p>}
           </div>
           <div>
-          <label className="block text-sm font-medium text-black">Fecha de Compra:</label>
+          <label className="block text-sm font-medium  text-blue-gray-900">Fecha de Compra:</label>
             <Input
            
               name="fecha_compra"
@@ -336,7 +336,7 @@ export function CrearCompra({ handleClose, fetchCompras, proveedores, insumos })
             {errors.fecha_compra && <p className="text-red-500 text-xs mt-1">{errors.fecha_compra}</p>}
           </div>
           <div>
-          <label className="block text-sm font-medium text-black">Fecha de Registro:</label>
+          <label className="block text-sm font-medium  text-blue-gray-900">Fecha de Registro:</label>
             <Input
               label="Fecha de Registro"
               name="fecha_registro"
@@ -348,7 +348,7 @@ export function CrearCompra({ handleClose, fetchCompras, proveedores, insumos })
             {errors.fecha_registro && <p className="text-red-500 text-xs mt-1">{errors.fecha_registro}</p>}
           </div>
           <div>
-          <label className="block text-sm font-medium text-black">Nro. de Recibo:</label>
+          <label className="block text-sm font-medium  text-blue-gray-900">Nro. de Recibo:</label>
             <Input
 
               name="numero_recibo"
